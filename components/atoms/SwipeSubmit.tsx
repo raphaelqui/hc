@@ -11,7 +11,7 @@ import { useSnackbar } from "@/context/SnackbarContext";
 interface ISwipeSubmit {
   name: string;
   onSubmit: () => void;
-  start: boolean;
+  start: any;
 }
 
 const SwipeSubmit: React.FC<ISwipeSubmit> = ({ name, onSubmit, start }) => {
@@ -50,7 +50,7 @@ const SwipeSubmit: React.FC<ISwipeSubmit> = ({ name, onSubmit, start }) => {
   }, []);
 
   const handleMouseDown = (e: MouseEvent) => {
-    elem.current!.style.zIndex = 510;
+    elem.current!.style.zIndex = "510";
     startingPoint = elem.current?.style.transform;
     if (
       elem.current?.style.transform ===
@@ -130,7 +130,7 @@ const SwipeSubmit: React.FC<ISwipeSubmit> = ({ name, onSubmit, start }) => {
               zIndex: 505,
             }}>
             <Typography
-              variant='body2'
+              variant='body1'
               sx={{
                 pl: 1,
                 display: "flex",
@@ -177,7 +177,7 @@ const SwipeSubmit: React.FC<ISwipeSubmit> = ({ name, onSubmit, start }) => {
             />
           </Stack>
           <Grow in={!swiped} timeout={{ enter: 500, exit: 0 }}>
-            <Typography variant='body2' ml={"auto"} px={1}>
+            <Typography variant='body1' ml={"auto"} px={1}>
               einchecken
             </Typography>
           </Grow>

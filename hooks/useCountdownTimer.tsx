@@ -1,11 +1,11 @@
 /** @format */
 import React, { useState, useEffect, Component, useRef } from "react";
 
-function useCountdownTimer(startCountdown, duration) {
+function useCountdownTimer(startCountdown: any, duration: any) {
   const [isCounting, setIsCounting] = useState(false);
 
   useEffect(() => {
-    let intervalId;
+    let intervalId: any;
 
     if (startCountdown) {
       setIsCounting(true);

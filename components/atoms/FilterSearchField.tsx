@@ -9,6 +9,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import CheckIcon from "@mui/icons-material/Check";
 import { useFormContext, Controller } from "react-hook-form";
 import { SxProps } from "@mui/system";
+import { palette } from "@/theme";
 
 interface IFilterSearchField {
   label: string;
@@ -67,16 +68,16 @@ const FilterSearchField: React.FunctionComponent<IFilterSearchField> = ({
             cursor: "pointer",
             height: 34,
             width: "auto",
-            bgcolor: open ? "checkedInFont" : "#EDF0ED",
+            bgcolor: open ? palette.checkedInFont : "#EDF0ED",
             px: 1.5,
           }}>
           <Typography
             sx={{
               textAlign: "center",
-              color: open ? "#EDF0ED" : "checkedInFont",
+              color: open ? "#EDF0ED" : palette.checkedInFont,
               whiteSpace: "pre",
             }}
-            variant='body2'>
+            variant='body1'>
             {label}
           </Typography>
         </Stack>
@@ -84,7 +85,9 @@ const FilterSearchField: React.FunctionComponent<IFilterSearchField> = ({
         <Grow
           in={open}
           addEndListener={(e) => {
-            e.childNodes[0].childNodes[1].childNodes[0].childNodes[0].focus();
+            const elem = e.childNodes[0].childNodes[1].childNodes[0]
+              .childNodes[0] as HTMLElement;
+            elem.focus();
           }}
           style={{
             transitionDelay: "70ms",

@@ -12,7 +12,7 @@ import {
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 interface ICopyToClipbaord {
-  value: String;
+  value: String | undefined;
 }
 
 const CopyToClipboard: React.FunctionComponent<ICopyToClipbaord> = ({
@@ -21,7 +21,7 @@ const CopyToClipboard: React.FunctionComponent<ICopyToClipbaord> = ({
   const [tool, setTool] = React.useState(false);
 
   const handleCopyToClipboard = () => {
-    navigator.clipboard.writeText(value).then(() => {
+    navigator.clipboard.writeText(value as any).then(() => {
       setTool(true);
     });
   };

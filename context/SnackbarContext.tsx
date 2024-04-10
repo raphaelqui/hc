@@ -3,9 +3,8 @@
 import Snackbar from "@mui/material/Snackbar";
 import React, { createContext, useState, useContext, useEffect } from "react";
 import Slide, { SlideProps } from "@mui/material/Slide";
-import { TransitionProps } from "@mui/material/transitions";
 
-const SnackbarContext = createContext();
+const SnackbarContext = createContext({});
 export const useSnackbar = () => useContext(SnackbarContext);
 
 interface ISnackbarContext {

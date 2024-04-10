@@ -3,6 +3,8 @@ import { SxProps } from "@mui/system";
 import { Stack, Box, Typography } from "@mui/material";
 import React from "react";
 import CloseIcon from "@mui/icons-material/Close";
+import { palette } from "@/theme";
+
 interface IFilterSearchQuery {
   sx?: SxProps;
   value: String;
@@ -23,7 +25,7 @@ const FilterSearchQuery: React.FunctionComponent<IFilterSearchQuery> = ({
         justifyContent: "center",
         alignItems: "center",
         px: 1.5,
-        bgcolor: "checkedInFont",
+        bgcolor: palette.checkedInFont,
         cursor: "pointer",
         height: 34,
         ...sx,
@@ -34,7 +36,7 @@ const FilterSearchQuery: React.FunctionComponent<IFilterSearchQuery> = ({
           whiteSpace: "pre",
           color: "#EDF0ED",
         }}
-        variant='body2'>
+        variant='body1'>
         {`"${value}"`}
       </Typography>
       <CloseIcon

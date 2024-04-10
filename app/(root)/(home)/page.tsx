@@ -77,15 +77,17 @@ export default function Home() {
   }, [methods.watch().filterSearch]);
 
   // filter list function
-  const handleFilter = (arr) => {
-    const filter = methods.getValues().filterOptions.reduce((accu, filter) => {
-      if (filter.value) {
-        return filter;
-      } else {
-        return accu;
-      }
-    }, {});
-    const list = arr.reduce((accu, item) => {
+  const handleFilter = (arr: any) => {
+    const filter: any = methods
+      .getValues()
+      .filterOptions.reduce((accu, filter) => {
+        if (filter.value) {
+          return filter;
+        } else {
+          return accu;
+        }
+      }, {});
+    const list = arr.reduce((accu: any, item: any) => {
       let searchWord;
       let filterCheckedIn = false;
       let filterAll = false;
@@ -124,30 +126,33 @@ export default function Home() {
       setTimeout(() => {
         setLoading(false);
         setSuccess(true);
-        const results = list.reduce((accu, item) => {
+        const results = list.reduce((accu: any, item: any) => {
           const haystack = [
             { prop: "name", value: item.name },
             { prop: "infos", value: item.infos },
           ];
-          const tmpResults = haystack.reduce((item_results_obj, hay) => {
-            if (hay.value.includes(debouncedFilterSearch)) {
-              const indexNum = hay.value.indexOf(debouncedFilterSearch);
-              const lengthNum = debouncedFilterSearch.length;
-              const resArr = [
-                hay.value.slice(0, indexNum),
-                `/*${debouncedFilterSearch}*/`,
-                hay.value.slice(indexNum + lengthNum),
-              ];
-              const mStr = resArr.join(""); // mutated String
-              item_results_obj = {
-                ...item_results_obj,
-                [hay.prop]: mStr,
-              };
-              return item_results_obj;
-            } else {
-              return item_results_obj;
-            }
-          }, {});
+          const tmpResults = haystack.reduce(
+            (item_results_obj: any, hay: any) => {
+              if (hay.value.includes(debouncedFilterSearch)) {
+                const indexNum = hay.value.indexOf(debouncedFilterSearch);
+                const lengthNum = debouncedFilterSearch.length;
+                const resArr = [
+                  hay.value.slice(0, indexNum),
+                  `/*${debouncedFilterSearch}*/`,
+                  hay.value.slice(indexNum + lengthNum),
+                ];
+                const mStr = resArr.join(""); // mutated String
+                item_results_obj = {
+                  ...item_results_obj,
+                  [hay.prop]: mStr,
+                };
+                return item_results_obj;
+              } else {
+                return item_results_obj;
+              }
+            },
+            {}
+          );
           if (Object.keys(tmpResults).length > 0) {
             accu.push({
               ...item,
@@ -178,11 +183,11 @@ export default function Home() {
     }
   }, [debouncedFilterSearch]);
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: any) => {
     // console.log(data);
   };
   const checkInToggle = (id: number) => {
-    const tmpList = list.reduce((accu: any, item) => {
+    const tmpList = list.reduce((accu: any, item: any) => {
       if (id === item.id) {
         accu.push({
           ...item,
@@ -198,7 +203,7 @@ export default function Home() {
     if (searchQuery.length === 0) {
       setFilteredList(handleFilter(tmpList));
     } else {
-      const searchList = filteredList.reduce((accu: any, item) => {
+      const searchList = filteredList.reduce((accu: any, item: any) => {
         if (id === item.id) {
           accu.push({
             ...item,
@@ -342,7 +347,9 @@ export default function Home() {
                   }}>
                   {fields.map((field, index) => {
                     return (
-                      <Box key={"filter-item-index"} mr={1}>
+                      <Box
+                        key={"filter-item-" + field.label + "-index-" + index}
+                        mr={1}>
                         <FilterToggleField
                           onSelect={resetOptions}
                           name={"filterOptions." + index + ".value"}
@@ -387,7 +394,7 @@ export default function Home() {
             </FormProvider>
           </Stack>
           <TransitionGroup>
-            {filteredList.map((elem, index) => {
+            {filteredList.map((elem: any, index) => {
               return (
                 <Collapse key={`tile-${elem.id}`}>
                   <Tile
@@ -428,7 +435,7 @@ export default function Home() {
                   fontSize: "1.725rem",
                 }}
               />
-              <Typography variant='body2'>
+              <Typography variant='body1'>
                 Tut mir leid, es gab keine Suchergebnisse für{" "}
                 <b>{searchQuery}</b> gefunden!
               </Typography>

@@ -5,13 +5,18 @@ import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import SwipeSubmit from "./SwipeSubmit";
 import CopyToClipboard from "@/components/atoms/CopyToClipboard";
 import { useSnackbar } from "@/context/SnackbarContext";
+import { palette } from "@/theme";
+interface SnackbarState {
+  setSnackbarState: (arg0: object) => void;
+  // Weitere Eigenschaften und Methoden
+}
 
 interface ITile {
   checkedIn?: false;
-  name?: String;
+  name?: any;
   email?: String;
   id?: Number;
-  infos?: String;
+  infos?: any;
   checkInToggle: () => void;
 }
 
@@ -23,7 +28,7 @@ const Tile: React.FunctionComponent<ITile> = ({
   infos,
   checkInToggle,
 }) => {
-  const { setSnackbarState } = useSnackbar();
+  const { setSnackbarState } = useSnackbar() as SnackbarState;
   const [open, setOpen] = useState(false);
   const [checkInBool, setCheckInBool] = useState(checkedIn);
   let resName;
@@ -39,6 +44,7 @@ const Tile: React.FunctionComponent<ITile> = ({
     resName = resName.map((item, index) => {
       return (
         <div
+          key={"marked-font-" + index}
           style={{
             display: "inline",
             backgroundColor: index === 1 ? "#d1ddfa" : "none",
@@ -58,6 +64,7 @@ const Tile: React.FunctionComponent<ITile> = ({
     resInfos = resInfos.map((item, index) => {
       return (
         <div
+          key={"marked-font-" + index}
           style={{
             display: "inline",
             backgroundColor: index === 1 ? "#d1ddfa" : "none",
@@ -69,8 +76,6 @@ const Tile: React.FunctionComponent<ITile> = ({
   } else {
     resInfos = infos;
   }
-  console.log(resName);
-  console.log(resInfos);
 
   useEffect(() => {
     if (open) {
@@ -100,9 +105,7 @@ const Tile: React.FunctionComponent<ITile> = ({
     )
       .then((res) => res.json())
       .then((data) => {
-        setCheckInBool((bool: any) => {
-          return !bool;
-        });
+        setCheckInBool(checkInBool && !checkInBool);
       });
   };
 
@@ -137,7 +140,7 @@ const Tile: React.FunctionComponent<ITile> = ({
             sx={{
               height: 12,
               width: 12,
-              bgcolor: checkInBool ? "checkedIn" : "notCheckedIn",
+              bgcolor: checkInBool ? palette.checkedIn : palette.notCheckedIn,
               borderRadius: 1,
             }}
           />
@@ -152,10 +155,10 @@ const Tile: React.FunctionComponent<ITile> = ({
                 py: 1,
                 ml: 1,
               }}>
-              <Typography variant='subtitle3'>{resName}</Typography>
-              <Typography variant='body2'>{email}</Typography>
+              <Typography variant='h6'>{resName}</Typography>
+              <Typography variant='body1'>{email}</Typography>
             </Stack>
-            <Typography width={180} textAlign={"right"} variant='body3'>
+            <Typography width={180} textAlign={"right"} variant='body2'>
               {resInfos}
             </Typography>
           </Stack>

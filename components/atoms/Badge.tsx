@@ -16,7 +16,7 @@ const Badge: React.FunctionComponent<IBadge> = ({ badgeContent }) => {
         height: "100%",
       }}>
       <Typography
-        variant='body2LightBold'
+        variant='subtitle2'
         sx={{
           height: "auto",
           width: "auto",

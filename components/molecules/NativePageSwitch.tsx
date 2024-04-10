@@ -64,7 +64,7 @@ const NativePageSwitch: React.FunctionComponent<INativePageSwitch> = ({
               direction={"row"}>
               {child.props.startAdornment && child.props.startAdornment}
               {child.props.title && (
-                <Typography variant='subtitle2'>{child.props.title}</Typography>
+                <Typography variant='subtitle1'>{child.props.title}</Typography>
               )}
               {child.props.endAdornment && child.props.endAdornment}
             </Stack>

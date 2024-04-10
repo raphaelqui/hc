@@ -1,24 +1,21 @@
 /** @format */
-
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
-import { Stack, Dialog } from "@mui/material";
-import AppVideo from "@/assets/IntroAnimation.mp4";
+import React, { useEffect, useRef } from "react";
+import { Stack } from "@mui/material";
 
 interface IAppIntro {}
 
 const AppIntro: React.FunctionComponent<IAppIntro> = () => {
-  const videoRef = useRef(null);
-  const intro = useRef(null);
-  const [played, setPlayed] = useState(false);
+  const AppIntroVideo: string = require("@/assets/IntroAnimation.mp4");
+  const videoRef: any = useRef(null);
+  const intro: any = useRef(null);
 
   useEffect(() => {
     setTimeout(() => {
       videoRef.current.style.opacity = "0";
     }, 1900);
     setTimeout(() => {
-      console.log(intro.current.style.height);
       intro.current.style.height = "57px";
     }, 2400);
     setTimeout(() => {
@@ -28,7 +25,6 @@ const AppIntro: React.FunctionComponent<IAppIntro> = () => {
 
   useEffect(() => {
     if (videoRef.current) {
-      console.log(videoRef.current);
       videoRef.current?.play();
     }
   }, []);
@@ -57,7 +53,7 @@ const AppIntro: React.FunctionComponent<IAppIntro> = () => {
         autoPlay
         width='460'
         height='auto'>
-        <source src={AppVideo} type='video/mp4' />
+        <source src={AppIntroVideo} type='video/mp4' />
       </video>
     </Stack>
   );

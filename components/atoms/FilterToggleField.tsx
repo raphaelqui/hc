@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Stack, Typography } from "@mui/material";
 import { useFormContext, Controller } from "react-hook-form";
+import { palette } from "@/theme";
 
 interface IFilterToggleField {
   label: string;
@@ -32,16 +33,16 @@ const FilterToggleField: React.FunctionComponent<IFilterToggleField> = ({
               cursor: "pointer",
               height: 34,
               width: "auto",
-              bgcolor: getValues(name) ? "checkedInFont" : "#EDF0ED",
+              bgcolor: getValues(name) ? palette.checkedInFont : "#EDF0ED",
               px: 1.5,
             }}>
             <Typography
               sx={{
                 textAlign: "center",
-                color: getValues(name) ? "#EDF0ED" : "checkedInFont",
+                color: getValues(name) ? "#EDF0ED" : palette.checkedInFont,
                 whiteSpace: "pre",
               }}
-              variant='body2'>
+              variant='body1'>
               {label}
             </Typography>
           </Stack>
