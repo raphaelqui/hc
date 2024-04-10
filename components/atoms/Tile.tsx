@@ -105,7 +105,9 @@ const Tile: React.FunctionComponent<ITile> = ({
     )
       .then((res) => res.json())
       .then((data) => {
-        setCheckInBool(checkInBool && !checkInBool);
+        setCheckInBool(((bool: any) => {
+          return !bool;
+        }) as any);
       });
   };
 

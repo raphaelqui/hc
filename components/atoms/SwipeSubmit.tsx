@@ -115,6 +115,7 @@ const SwipeSubmit: React.FC<ISwipeSubmit> = ({ name, onSubmit, start }) => {
     if (offsetX < (parentElemWidth - elemWidth) / 2) {
       elem.current!.style.transform = `translateX(0px)`;
       if (startingPoint !== elem.current!.style.transform) {
+        alert("false");
         onSubmit();
         setSwiped(false);
       }
