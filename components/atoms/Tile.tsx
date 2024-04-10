@@ -124,7 +124,7 @@ const Tile: React.FunctionComponent<ITile> = ({
           bgcolor: open ? "#f5f6fa" : "white",
         }}>
         <Stack
-          onClick={() => {
+          onClick={(e) => {
             setOpen(!open);
           }}
           direction={"row"}

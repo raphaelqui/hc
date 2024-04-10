@@ -3,6 +3,7 @@ import useCountdownTimer from "@/hooks/useCountdownTimer";
 import React, { useState, useEffect, useRef } from "react";
 import { Stack, Box, Typography, Grow } from "@mui/material";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import CheckIcon from "@mui/icons-material/Check";
 
 interface ISwipeSubmit {
   name: string;
@@ -53,7 +54,6 @@ const SwipeSubmit: React.FC<ISwipeSubmit> = ({ name, onSubmit, start }) => {
   }, []);
 
   const handleMouseDown = (e: MouseEvent) => {
-    e.preventDefault();
     elem.current!.style.zIndex = "510";
     startingPoint = elem.current?.style.transform;
     if (
@@ -67,7 +67,6 @@ const SwipeSubmit: React.FC<ISwipeSubmit> = ({ name, onSubmit, start }) => {
   };
 
   const handleMouseMove = (e: MouseEvent) => {
-    e.preventDefault();
     if (startX !== undefined) {
       if (elem.current && elem.current.style) {
         const { clientX } = e;
@@ -80,7 +79,6 @@ const SwipeSubmit: React.FC<ISwipeSubmit> = ({ name, onSubmit, start }) => {
   };
 
   const handleMouseUp = (e: MouseEvent) => {
-    e.preventDefault();
     if (startX !== undefined) {
       controlOffset();
     }
@@ -88,14 +86,12 @@ const SwipeSubmit: React.FC<ISwipeSubmit> = ({ name, onSubmit, start }) => {
   };
 
   const handleTouchStart = (e: TouchEvent) => {
-    e.preventDefault();
     elem.current!.style.zIndex = "510";
     startingPoint = elem.current?.style.transform;
     touchStartX = e.touches[0].clientX;
   };
 
   const handleTouchMove = (e: TouchEvent) => {
-    e.preventDefault();
     if (touchStartX !== undefined) {
       if (elem.current && elem.current.style) {
         touchMoveX = e.touches[0].clientX;
@@ -108,7 +104,6 @@ const SwipeSubmit: React.FC<ISwipeSubmit> = ({ name, onSubmit, start }) => {
   };
 
   const handleTouchEnd = (e: TouchEvent) => {
-    e.preventDefault();
     if (touchStartX !== undefined) {
       controlOffset();
     }
