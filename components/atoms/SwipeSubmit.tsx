@@ -1,12 +1,8 @@
 /** @format */
 import useCountdownTimer from "@/hooks/useCountdownTimer";
-import React, { useState, useEffect, Component, useRef } from "react";
-import { Stack, Box, Typography, Fade } from "@mui/material";
-import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
+import React, { useState, useEffect, useRef } from "react";
+import { Stack, Box, Typography, Grow } from "@mui/material";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import Grow from "@mui/material/Grow";
-import CheckIcon from "@mui/icons-material/Check";
-import { useSnackbar } from "@/context/SnackbarContext";
 
 interface ISwipeSubmit {
   name: string;
@@ -19,13 +15,14 @@ const SwipeSubmit: React.FC<ISwipeSubmit> = ({ name, onSubmit, start }) => {
   const parentElem = useRef<HTMLDivElement>(null);
   const [swiped, setSwiped] = useState(start);
   let startingPoint: any;
-  let startX: any;
+  let startX: number | undefined;
   let offsetX: number = 0;
-  let mouseDown: boolean = false;
+  let touchStartX: number | undefined;
+  let touchMoveX: number | undefined;
   let parentElemWidth: any;
   let elemWidth: any;
 
-  React.useEffect(() => {
+  useEffect(() => {
     const box = elem.current;
     parentElemWidth = parentElem.current?.clientWidth;
     elemWidth = elem.current?.clientWidth;
@@ -37,19 +34,26 @@ const SwipeSubmit: React.FC<ISwipeSubmit> = ({ name, onSubmit, start }) => {
 
     if (box) {
       box.addEventListener("mousedown", handleMouseDown);
+      box.addEventListener("touchstart", handleTouchStart);
       document.addEventListener("mouseup", handleMouseUp);
+      document.addEventListener("touchend", handleTouchEnd);
       document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("touchmove", handleTouchMove);
     }
     return () => {
       if (box) {
         box.removeEventListener("mousedown", handleMouseDown);
+        box.removeEventListener("touchstart", handleTouchStart);
         document.removeEventListener("mouseup", handleMouseUp);
+        document.removeEventListener("touchend", handleTouchEnd);
         document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("touchmove", handleTouchMove);
       }
     };
   }, []);
 
   const handleMouseDown = (e: MouseEvent) => {
+    e.preventDefault();
     elem.current!.style.zIndex = "510";
     startingPoint = elem.current?.style.transform;
     if (
@@ -60,14 +64,55 @@ const SwipeSubmit: React.FC<ISwipeSubmit> = ({ name, onSubmit, start }) => {
     } else {
       startX = e.clientX;
     }
-    mouseDown = true;
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    e.preventDefault();
+    if (startX !== undefined) {
+      if (elem.current && elem.current.style) {
+        const { clientX } = e;
+        offsetX = clientX - startX;
+        if (offsetX > 0 && offsetX < parentElemWidth - elemWidth) {
+          elem.current.style.transform = `translateX(${offsetX}px)`;
+        }
+      }
+    }
   };
 
   const handleMouseUp = (e: MouseEvent) => {
-    if (mouseDown) {
+    e.preventDefault();
+    if (startX !== undefined) {
       controlOffset();
     }
-    mouseDown = false;
+    startX = undefined;
+  };
+
+  const handleTouchStart = (e: TouchEvent) => {
+    e.preventDefault();
+    elem.current!.style.zIndex = "510";
+    startingPoint = elem.current?.style.transform;
+    touchStartX = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e: TouchEvent) => {
+    e.preventDefault();
+    if (touchStartX !== undefined) {
+      if (elem.current && elem.current.style) {
+        touchMoveX = e.touches[0].clientX;
+        offsetX = touchMoveX - touchStartX;
+        if (offsetX > 0 && offsetX < parentElemWidth - elemWidth) {
+          elem.current.style.transform = `translateX(${offsetX}px)`;
+        }
+      }
+    }
+  };
+
+  const handleTouchEnd = (e: TouchEvent) => {
+    e.preventDefault();
+    if (touchStartX !== undefined) {
+      controlOffset();
+    }
+    touchStartX = undefined;
   };
 
   const controlOffset = () => {
@@ -90,18 +135,8 @@ const SwipeSubmit: React.FC<ISwipeSubmit> = ({ name, onSubmit, start }) => {
     }, 300);
   };
 
-  const handleMouseMove = (e: MouseEvent) => {
-    if (mouseDown) {
-      if (elem.current && elem.current.style) {
-        const { clientX } = e;
-        offsetX = clientX - startX;
-        if (offsetX > 0 && offsetX < parentElemWidth - elemWidth) {
-          elem.current.style.transform = `translateX(${offsetX}px)`;
-        }
-      }
-    }
-  };
   const snackBool = useCountdownTimer(swiped, 2000);
+
   return (
     <>
       <Stack
