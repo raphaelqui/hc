@@ -60,7 +60,7 @@ const NativePageSwitch: React.FunctionComponent<INativePageSwitch> = ({
               }}
               columnGap={1}
               mx={"auto"}
-              py={2}
+              py={1.8}
               direction={"row"}>
               {child.props.startAdornment && child.props.startAdornment}
               {child.props.title && (

@@ -3,11 +3,10 @@
 
 import React, { useEffect, useRef } from "react";
 import { Stack } from "@mui/material";
-
+import AppIntroVideo from "@/assets/IntroAnimation.mp4";
 interface IAppIntro {}
 
 const AppIntro: React.FunctionComponent<IAppIntro> = () => {
-  const AppIntroVideo: string = require("@/assets/IntroAnimation.mp4");
   const videoRef: any = useRef(null);
   const intro: any = useRef(null);
 
@@ -42,6 +41,7 @@ const AppIntro: React.FunctionComponent<IAppIntro> = () => {
         bgcolor: "black",
         position: "absolute",
         zIndex: 100,
+        overflow: "hidden",
       }}>
       <video
         style={{
