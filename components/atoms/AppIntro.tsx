@@ -15,8 +15,8 @@ const AppIntro: React.FunctionComponent<IAppIntro> = () => {
       videoRef.current.style.opacity = "0";
     }, 1900);
     setTimeout(() => {
-      intro.current.style.height = "57px";
-    }, 2400);
+      intro.current.style.height = "0px";
+    }, 2500);
     setTimeout(() => {
       intro.current.style.zIndex = 1;
     }, 2600);

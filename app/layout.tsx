@@ -24,7 +24,7 @@ export default function RootLayout({
           <AppRouterCacheProvider>
             <SnackbarProvider>
               <ThemeProvider theme={theme}>
-                <AppIntro />
+                {/*<AppIntro />*/}
                 {children}
               </ThemeProvider>
             </SnackbarProvider>

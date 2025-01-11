@@ -24,16 +24,25 @@ export const palette = {
 
 
 const theme = createTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 850,
+      md: 960,
+      lg: 1280,
+      xl: 1920,
+    },
+  },
   typography: {
     fontFamily: roboto.style.fontFamily,
     h5: {
-        color: 'red'
+      color: 'red'
     },
     subtitle1: {
-        color: 'white',
-        fontSize: '1rem',
-        fontFamily: 'roboto mono',
-        fontWeight: 500
+      color: 'white',
+      fontSize: '1rem',
+      fontFamily: 'roboto mono',
+      fontWeight: 500
     },
     subtitle2: {
       color: palette.lightYellow,
