@@ -88,6 +88,8 @@ const SwipeYControl: React.FunctionComponent<ISwipeYControl> = ({ children }) =>
     let childIndex: number;
     let sequenceLength: number;
 
+    // 
+
     const changeSequence = () => {
         level = 0;
         if (sequences[seqIndex][0].type.name == "SwipeYFrame") {
@@ -115,11 +117,11 @@ const SwipeYControl: React.FunctionComponent<ISwipeYControl> = ({ children }) =>
     }
     const scroll = () => {
         document.body.classList.add("no-scroll");
-        console.log(height * level);
         window.scrollTo(0, (height * level) + base);
     }
     const jump = () => {
         if (nowY - startY > 0) {
+
             if (level < sequenceSYFLevels - 1) {
                 level = level + 1;
             } else if (level == sequenceSYFLevels - 1 && seqIndex < sequences.length - 1) {
@@ -132,10 +134,14 @@ const SwipeYControl: React.FunctionComponent<ISwipeYControl> = ({ children }) =>
                 return;
             }
         } else {
+            console.log(level);
+            console.log(seqIndex);
             if (level > 0 && sequenceSYFLevels > 0) {
-                console.log("back");
-                // wir springen zurück in die letzte Sequenz
                 level = level - 1;
+            } else if (level == 0 && seqIndex > 0) {
+                console.log("here finally");
+                level = level - 1;
+
             }
         }
         scroll();
@@ -158,7 +164,7 @@ const SwipeYControl: React.FunctionComponent<ISwipeYControl> = ({ children }) =>
         }
     }
     const SYFSequenceEndScroll = (e: any) => {
-        diff = Math.abs(height * level - window.scrollY);
+        diff = Math.abs((height * level + base) - window.scrollY);
         if (level == 0 && seqIndex == 0) {
             scroll();
         }
@@ -172,6 +178,7 @@ const SwipeYControl: React.FunctionComponent<ISwipeYControl> = ({ children }) =>
     }
     const handleScrolling = (e: any) => {
         if (sequenceSYFLevels == level && level == 0 && startY == 0) {
+            // unterschreiten
             if (base - Math.floor(window.scrollY) > 90) {
                 seqIndex--;
                 changeSequence();
@@ -182,24 +189,38 @@ const SwipeYControl: React.FunctionComponent<ISwipeYControl> = ({ children }) =>
                 scroll();
                 startY = 100;
                 nowY = 300;
+            } else if (Math.floor(window.scrollY) - (base + height - window.innerHeight) > 90) {
+                base = base + height;
+                console.log(base);
+                seqIndex++;
+                changeSequence();
+                changeContextHeight();
+                level = 0;
+                scroll();
+                startY = 100;
+                nowY = 300;
             }
-
-            // jetzt berechne wie viel Platz zwischen drin ist
-
-            // wurde die base unterboten oder dessen base überboten, dann agiere
         } else {
-
             SYFSequenceScrolling(e);
         }
     }
     const handleEndScroll = (e: any) => {
         if (sequenceSYFLevels == level && level == 0) {
-
             if (window.scrollY < base) {
                 scroll();
+            } else if (window.scrollY > (base + height - window.innerHeight)) {
+                // wir dürfen nicht zurück sondern hier hin: 
+                // base + height - window.innerHeight
+                document.body.classList.add("no-scroll");
+                window.scrollTo(0, base + height - window.innerHeight);
             }
-            // wurde die base unterboten oder dessen base überboten, dann agiere
             diff = Math.abs(base - window.scrollY);
+            if (diff < 5 && diff > -5) {
+                document.body.classList.remove("no-scroll");
+                startY = 0;
+                nowY = 0;
+            }
+            diff = base + height - window.innerHeight - window.scrollY;
             if (diff < 5 && diff > -5) {
                 document.body.classList.remove("no-scroll");
                 startY = 0;
@@ -215,7 +236,7 @@ const SwipeYControl: React.FunctionComponent<ISwipeYControl> = ({ children }) =>
 
     /* das sequence array gibt und die länge der SYF-Sequenzen, dann müssen auch noch
     alle anderen SY-Elemente gefunden und gespeichert werden 
-
+    
     // levels bilden sich aus den verschiedenen Sequenzen:
     */
 
@@ -227,15 +248,15 @@ const SwipeYControl: React.FunctionComponent<ISwipeYControl> = ({ children }) =>
         /* es wurden nun denn auch nur die SYF-children gemappt um diese zusammen
         auszugeben, aber eigentlich dürfen nur die SYF-children am Stück sein
         und nicht dessen Gesamtheit:
-
+    
             - DELIMETER zwischen SY-Elemente setzen
             - space für SY-Elemente setzen / wählen
-
+    
             - Logo: kreuz muss gebildet werden, jedoch dürfen die Elemente dazu 
               horizontal oder vertikal kommen, nicht ein Zusammenspiel
-
-
-
+    
+    
+    
              */
 
 
