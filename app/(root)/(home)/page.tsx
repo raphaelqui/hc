@@ -10,6 +10,8 @@ import Image from "next/image";
 import Badge from "@/components/atoms/Badge";
 import Nav from "@/components/atoms/Nav";
 import SwipeYControl from "@/components/atoms/SwipeYControl";
+import SwipeYFrame from "@/components/atoms/SwipeYFrame";
+import SwipeYHorizontal from "@/components/atoms/SwipeYHorizontal";
 
 export default function Home() {
 
@@ -31,6 +33,40 @@ export default function Home() {
 
   useHashChange();
 
+  const sections = [
+    {
+      text: "Start",
+      id: "start",
+      bg: "blue",
+      children: (<></>) // diese children hier finden sich im organisms folder betrachten?
+    }, {
+      text: "Für Kunden",
+      id: "customer",
+      bg: "linear-gradient(to top, #FAFFD1, #A1FFCE)",
+      children: (<></>)
+    }, {
+      text: "Für Mitarbeiter",
+      id: "employees",
+      bg: "linear-gradient(to bottom, #eecda3, #ef629f)",
+      children: (<></>)
+    }, {
+      text: "Kontaktinfos",
+      id: "contact",
+      children: (<></>),
+      bg: "linear-gradient(to top, #eecda3, #ef629f)",
+    }, {
+      text: "Stellenangebote",
+      id: "hiring",
+      bg: "linear-gradient(to bottom, #eecda3, #ef629f)",
+      children: (<></>)
+    }, {
+      text: "Das Team",
+      id: "team",
+      bg: "linear-gradient(to top, #e0eafc, #cfdef3)",
+      children: (<></>)
+    }
+  ];
+
   return (
     <Stack
       sx={{
@@ -39,52 +75,35 @@ export default function Home() {
       }}>
 
 
+      <SwipeYControl>
+        {/* SwipeYFrame - Sequenz 1 */}
+        {...(sections.map(({ id, children, bg }) => {
+          return (<SwipeYFrame name={id} bg={bg}>{children}</SwipeYFrame>);
+        }))}
+        {/* SwipeYHorizontal - Sequenz 2 */}
+        <SwipeYHorizontal>
+          <Stack sx={{
+            height: 560,
+            width: "100%",
+          }}>
+          </Stack>
+          <Typography>Hallo wie gehts?</Typography>
+          <Stack sx={{
+            height: 560,
+            width: "100%",
+          }}>
+          </Stack>
+        </SwipeYHorizontal>
 
-      <Stack id="start" sx={{
-        height: "100vh",
-        opacity: "0.8",
-        width: "100%",
-        bgcolor: "#74b9ff"
-      }}></Stack>
+        {/* SwipeYFrame - Sequenz 3 */}
+        {...(sections.map(({ id, children, bg }) => {
+          return (<SwipeYFrame name={id} bg={bg}>{children}</SwipeYFrame>);
+        }))}
 
-      <Stack id="customer" sx={{
-        height: "100vh",
-        opacity: "0.8",
-        width: "100%",
-        bgcolor: "#a29bfe"
-      }}></Stack>
 
-      <Stack id="employees" sx={{
-        height: "100vh",
-        opacity: "0.8",
-        width: "100%",
-        bgcolor: "#ffdd59"
-      }}></Stack>
+      </SwipeYControl>
 
-      <Stack id="contact" sx={{
-        height: "100vh",
-        opacity: "0.8",
-        width: "100%",
-        bgcolor: "#FEA47F"
-      }}></Stack>
-
-      <Stack id="hiring" sx={{
-        height: "100vh",
-        opacity: "0.8",
-        width: "100%",
-        bgcolor: "#FAA49F"
-      }}></Stack>
-
-      <Stack id="team" sx={{
-        height: "100vh",
-        opacity: "0.8",
-        width: "100%",
-        bgcolor: "#FEA47F"
-      }}></Stack>
-
-      <SwipeYControl levels={6} />
-
-      <Nav option={option} />
+      <Nav option={option} options={sections} />
 
 
     </Stack>

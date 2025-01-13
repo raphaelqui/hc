@@ -13,9 +13,11 @@ import Link from 'next/link';
 import Flag from 'react-world-flags';
 interface INav {
   option?: number;
+  options: any;
 }
 const Nav: React.FunctionComponent<INav> = ({
   option = 1,
+  options,
 }) => {
 
 
@@ -80,43 +82,29 @@ const Nav: React.FunctionComponent<INav> = ({
         <Stack>
           <Typography variant="h6">HC</Typography>
         </Stack>
+
+
         <Stack display={{ xs: "none", sm: "flex" }} direction={"row"} spacing={2} sx={{
           "& > p:hover": {
             textDecoration: "underline",
             cursor: "pointer",
           }
         }}>
-          <Link href={"/#start"} style={{ textDecoration: 'none', color: "black" }}>
-            <Typography sx={{
-              textDecoration: option == 0 ? "underline" : "none"
-            }}>Start</Typography>
-          </Link>
+          {
+            options.reduce((accu: JSX.Element[], elem: { text: string; href: string }, index: number) => {
+              accu.push(
+                <Link key={`nav-option-${index + 1}`} href={"/#" + elem.href
+                } style={{ textDecoration: 'none', color: "black" }}>
+                  <Typography sx={{
+                    textDecoration: option == index ? "underline" : "none"
+                  }}>{elem.text}</Typography>
+                </Link>
+              );
+              return accu;
+            }, [])
+          }
 
-          <Link href={"/#customer"} style={{ textDecoration: 'none', color: "black" }}>
-            <Typography sx={{
-              textDecoration: option == 1 ? "underline" : "none"
-            }}>Für Kunden</Typography>
-          </Link>
-          <Link href={"/#employees"} style={{ textDecoration: 'none', color: "black" }}>
-            <Typography sx={{
-              textDecoration: option == 2 ? "underline" : "none"
-            }}>Für Mitarbeiter</Typography>
-          </Link>
-          <Link href={"/#contact"} style={{ textDecoration: 'none', color: "black" }}>
-            <Typography sx={{
-              textDecoration: option == 3 ? "underline" : "none"
-            }}>Kontaktinfos</Typography>
-          </Link>
-          <Link href={"/#hiring"} style={{ textDecoration: 'none', color: "black" }}>
-            <Typography sx={{
-              textDecoration: option == 4 ? "underline" : "none"
-            }}>Stellenangebote</Typography>
-          </Link>
-          <Link href={"/#team"} style={{ textDecoration: 'none', color: "black" }}>
-            <Typography sx={{
-              textDecoration: option == 5 ? "underline" : "none"
-            }}>Das Team</Typography>
-          </Link>
+
         </Stack>
 
 
@@ -182,27 +170,29 @@ const Nav: React.FunctionComponent<INav> = ({
 
                   }}>
                   {langs.map(({ unicode, initials }, index) => {
-                    return (<Stack
-                      onClick={() => {
-                        setLang(index);
-                      }}
-                      sx={{
-                        width: "100%",
-                        my: 0.2,
-                        "&:hover": {
-                          bgcolor: "#f2f2f2"
-                        }
-                      }}>
-                      <Stack direction={"row"} alignItems={"center"} sx={{
-                        ml: 0.75,
-                        width: "min-content",
-                      }}>
-                        <Typography variant="subtitle1">
-                          {unicode}
-                        </Typography>
-                        <Typography pl={0.5} variant="body2">{initials}</Typography>
-                      </Stack>
-                    </Stack>);
+                    return (
+                      <Stack
+                        key={`accordion-option${index + 1}`}
+                        onClick={() => {
+                          setLang(index);
+                        }}
+                        sx={{
+                          width: "100%",
+                          my: 0.2,
+                          "&:hover": {
+                            bgcolor: "#f2f2f2"
+                          }
+                        }}>
+                        <Stack direction={"row"} alignItems={"center"} sx={{
+                          ml: 0.75,
+                          width: "min-content",
+                        }}>
+                          <Typography variant="subtitle1">
+                            {unicode}
+                          </Typography>
+                          <Typography pl={0.5} variant="body2">{initials}</Typography>
+                        </Stack>
+                      </Stack>);
                   })}
                 </AccordionDetails>
               </Accordion>
