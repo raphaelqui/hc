@@ -99,6 +99,25 @@ export default function Home() {
         {...(sections.map(({ id, children, bg }) => {
           return (<SwipeYFrame name={id} bg={bg}>{children}</SwipeYFrame>);
         }))}
+        {/* SwipeYHorizontal - Sequenz 2 */}
+        <SwipeYHorizontal>
+          <Stack sx={{
+            height: 560,
+            width: "100%",
+          }}>
+          </Stack>
+          <Typography>Hallo wie gehts?</Typography>
+          <Stack sx={{
+            height: 560,
+            width: "100%",
+          }}>
+          </Stack>
+        </SwipeYHorizontal>
+
+        {/* SwipeYFrame - Sequenz 3 */}
+        {...(sections.map(({ id, children, bg }) => {
+          return (<SwipeYFrame name={id} bg={bg}>{children}</SwipeYFrame>);
+        }))}
 
 
       </SwipeYControl>

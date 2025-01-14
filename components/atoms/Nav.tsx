@@ -69,7 +69,7 @@ const Nav: React.FunctionComponent<INav> = ({
     <Stack sx={{
       position: "fixed",
       width: "100%",
-      backdropFilter: "blur(10px)"
+      // backdropFilter: "blur(10px)"
     }}>
       <Stack
         mx={4}

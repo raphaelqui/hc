@@ -1,37 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
-import { listItemAvatarClasses, Stack } from "@mui/material";
-/*
-    TODOS:
-        _PROP_CHILDREN 
-            // <SwipeYFrame/>  diese Komponente wird abgezählt und wird dann als 
-            // swipeframe gezählt, wenn es nach diese Komponente kein anderes 
-            // children gibt wird maximal bis hierhin kontrolliert gescrollt.
+import React, { useEffect, useRef } from "react";
+import { Stack } from "@mui/material";
 
-            // <SwipeYHorizontal/>  diese Komponente hat einen Progress welches beim 
-            // y scrollen, visuell nach links swippt, aber tatsächlich weiter 
-            // nach unten scrollt, da der Hintergrund "fixed", wird man optisch getäuscht
-
-            // <SwipeYStack/>  diese Komponente beschreibt content welche ein Prozess
-            // durchlebt 0% zu 100%, wenn der user prozententual so viel gescrollt hat
-            // soll relativ prozentual dieses Element oder Content weiter nach links
-            // floaten oder größer werden
-
-            // <SwipeYContent/>  diese Komponente beschreibt einen Abschnitt der 
-            normal gescrollt wird
-
-        _PROP_STARTCHILD
-            // Jedes children hat eine baseaddress unter dieser kann der user direkt 
-            // dieses auffinden.
-
-        ich werde zunächst erst einmal die children-Dynamik programmieren, dann
-        wird es weiter gehen mit dem horizontalem Scrollen vielleicht.
-        
-        das mit den children ist jetzt ready, als nächstes muss ich damit anfangen
-        und vergleichen ob syf_children weniger oder gleich sind wie children
-        
-        wenn das der fall ist dann kann ich move on machen
-        
-*/
 interface ISwipeYControl {
     children: any;
 }
@@ -88,8 +57,6 @@ const SwipeYControl: React.FunctionComponent<ISwipeYControl> = ({ children }) =>
     let childIndex: number;
     let sequenceLength: number;
 
-    // 
-
     const changeSequence = () => {
         level = 0;
         if (sequences[seqIndex][0].type.name == "SwipeYFrame") {
@@ -104,13 +71,13 @@ const SwipeYControl: React.FunctionComponent<ISwipeYControl> = ({ children }) =>
         }
     }, [elem]);
     const changeContextHeight = () => {
-        childIndex = 0
-        for (let i = 0; i <= seqIndex; i++) {
+        childIndex = 0;
+        for (let i = 0; i < seqIndex; i++) {
             sequenceLength = sequences[i].length;
             if (sequenceLength == 1) {
                 childIndex++;
             } else {
-                childIndex = childIndex + (sequenceLength - 1);
+                childIndex = childIndex + (sequenceLength);
             }
         }
         height = elem.current?.children[childIndex].clientHeight;
@@ -121,7 +88,6 @@ const SwipeYControl: React.FunctionComponent<ISwipeYControl> = ({ children }) =>
     }
     const jump = () => {
         if (nowY - startY > 0) {
-
             if (level < sequenceSYFLevels - 1) {
                 level = level + 1;
             } else if (level == sequenceSYFLevels - 1 && seqIndex < sequences.length - 1) {
@@ -134,14 +100,18 @@ const SwipeYControl: React.FunctionComponent<ISwipeYControl> = ({ children }) =>
                 return;
             }
         } else {
-            console.log(level);
-            console.log(seqIndex);
             if (level > 0 && sequenceSYFLevels > 0) {
                 level = level - 1;
             } else if (level == 0 && seqIndex > 0) {
-                console.log("here finally");
-                level = level - 1;
-
+                seqIndex--;
+                changeSequence();
+                changeContextHeight();
+                base = base - height;
+                document.body.classList.add("no-scroll");
+                window.scrollTo(0, base + height - window.innerHeight);
+                startY = 100;
+                nowY = 300;
+                return;
             }
         }
         scroll();
@@ -178,20 +148,17 @@ const SwipeYControl: React.FunctionComponent<ISwipeYControl> = ({ children }) =>
     }
     const handleScrolling = (e: any) => {
         if (sequenceSYFLevels == level && level == 0 && startY == 0) {
-            // unterschreiten
             if (base - Math.floor(window.scrollY) > 90) {
                 seqIndex--;
                 changeSequence();
                 changeContextHeight();
                 level = sequenceSYFLevels - 1;
                 base = base - (height * (level + 1));
-                console.log(base);
                 scroll();
                 startY = 100;
                 nowY = 300;
             } else if (Math.floor(window.scrollY) - (base + height - window.innerHeight) > 90) {
                 base = base + height;
-                console.log(base);
                 seqIndex++;
                 changeSequence();
                 changeContextHeight();
@@ -209,8 +176,6 @@ const SwipeYControl: React.FunctionComponent<ISwipeYControl> = ({ children }) =>
             if (window.scrollY < base) {
                 scroll();
             } else if (window.scrollY > (base + height - window.innerHeight)) {
-                // wir dürfen nicht zurück sondern hier hin: 
-                // base + height - window.innerHeight
                 document.body.classList.add("no-scroll");
                 window.scrollTo(0, base + height - window.innerHeight);
             }
@@ -229,37 +194,6 @@ const SwipeYControl: React.FunctionComponent<ISwipeYControl> = ({ children }) =>
         } else {
             SYFSequenceEndScroll(e);
         }
-    }
-
-
-
-
-    /* das sequence array gibt und die länge der SYF-Sequenzen, dann müssen auch noch
-    alle anderen SY-Elemente gefunden und gespeichert werden 
-    
-    // levels bilden sich aus den verschiedenen Sequenzen:
-    */
-
-
-
-    // vergleiche die einzelenen Sequenzen
-    if (false) {
-        // restriction wird aufgehoben
-        /* es wurden nun denn auch nur die SYF-children gemappt um diese zusammen
-        auszugeben, aber eigentlich dürfen nur die SYF-children am Stück sein
-        und nicht dessen Gesamtheit:
-    
-            - DELIMETER zwischen SY-Elemente setzen
-            - space für SY-Elemente setzen / wählen
-    
-            - Logo: kreuz muss gebildet werden, jedoch dürfen die Elemente dazu 
-              horizontal oder vertikal kommen, nicht ein Zusammenspiel
-    
-    
-    
-             */
-
-
     }
 
 
