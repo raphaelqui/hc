@@ -3,10 +3,24 @@
     margin: 0;
     padding: 0;
 }
+
+body[xscr="true"]{
+    scroll-behavior: smooth;
+    overflow-x: scroll;
+}
+body[xscr="false"]{
+    scroll-behavior: auto;
+    overflow-x: hidden;
+}
+body[yscr="true"]{
+    scroll-behavior: smooth;
+    overflow-y: scroll;
+}
+body[yscr="false"]{
+    scroll-behavior: auto;
+    overflow-y: hidden;
+}
+
 .no-scroll {
     overflow: hidden;
-  }
-
-html{
-    scroll-behavior: smooth;
 }

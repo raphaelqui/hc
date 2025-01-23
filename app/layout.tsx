@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en'>
-      <body>
+      <body xscr="false" yscr="true">
         <Provider>
           <AppRouterCacheProvider>
             <SnackbarProvider>

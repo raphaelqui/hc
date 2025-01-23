@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from "react";
-import { Stack } from "@mui/material";
+import React, { useRef, useEffect, useState } from "react";
+import { Stack } from '@mui/material';
+
 
 interface ISwipeYControl {
     children: any;
@@ -8,7 +9,10 @@ const SwipeYControl: React.FunctionComponent<ISwipeYControl> = ({ children }) =>
     if (!children?.length) {
         children = [children];
     }
-
+    const [innerHeigt, setInnerHeight] = useState(0);
+    useEffect(() => {
+        setInnerHeight(window.innerHeight);
+    }, [window.innerHeight]);
     const elem = useRef<HTMLDivElement>(null);
     useEffect(() => {
         document.addEventListener("wheel", handleScrolling);
@@ -16,7 +20,6 @@ const SwipeYControl: React.FunctionComponent<ISwipeYControl> = ({ children }) =>
     }, []);
     let base: number = 0;
     let sequences: any = [];
-
     let index: number = 0;
     let lastSequence = children?.reduce((accu: any, child: any) => {
         switch (child?.type.name) {
@@ -46,7 +49,6 @@ const SwipeYControl: React.FunctionComponent<ISwipeYControl> = ({ children }) =>
         return accu;
     }, []);
     sequences.push(lastSequence);
-
     let level = 0;
     let startY = 0;
     let nowY = 0;
@@ -56,10 +58,10 @@ const SwipeYControl: React.FunctionComponent<ISwipeYControl> = ({ children }) =>
     let height: number = 0;
     let childIndex: number;
     let sequenceLength: number;
-
     const changeSequence = () => {
         level = 0;
         if (sequences[seqIndex][0].type.name == "SwipeYFrame") {
+
             sequenceSYFLevels = sequences[seqIndex].length;
         } else {
             sequenceSYFLevels = 0;
@@ -84,6 +86,8 @@ const SwipeYControl: React.FunctionComponent<ISwipeYControl> = ({ children }) =>
     }
     const scroll = () => {
         document.body.classList.add("no-scroll");
+        console.log((height * level) + base);
+        console.log(window.innerHeight);
         window.scrollTo(0, (height * level) + base);
     }
     const jump = () => {
@@ -117,35 +121,6 @@ const SwipeYControl: React.FunctionComponent<ISwipeYControl> = ({ children }) =>
         scroll();
 
     }
-    const SYFSequenceScrolling = (e: any) => {
-        if (Math.abs(nowY - startY) > 90) {
-            // abort  
-            return 0;
-        }
-        if (startY == 0) {
-            startY = e.pageY;
-            nowY = startY;
-        } else {
-            nowY = e.pageY;
-        }
-        if (Math.abs(nowY - startY) > 90) {
-
-            jump();
-        }
-    }
-    const SYFSequenceEndScroll = (e: any) => {
-        diff = Math.abs((height * level + base) - window.scrollY);
-        if (level == 0 && seqIndex == 0) {
-            scroll();
-        }
-        if (diff < 5 && diff > -5) {
-            document.body.classList.remove("no-scroll");
-            startY = 0;
-            nowY = 0;
-        } else if (Math.abs(nowY - startY) < 90) {
-            scroll();
-        }
-    }
     const handleScrolling = (e: any) => {
         if (sequenceSYFLevels == level && level == 0 && startY == 0) {
             if (base - Math.floor(window.scrollY) > 90) {
@@ -168,7 +143,19 @@ const SwipeYControl: React.FunctionComponent<ISwipeYControl> = ({ children }) =>
                 nowY = 300;
             }
         } else {
-            SYFSequenceScrolling(e);
+            if (Math.abs(nowY - startY) > 90) {
+                // abort  
+                return 0;
+            }
+            if (startY == 0) {
+                startY = e.pageY;
+                nowY = startY;
+            } else {
+                nowY = e.pageY;
+            }
+            if (Math.abs(nowY - startY) > 90) {
+                jump();
+            }
         }
     }
     const handleEndScroll = (e: any) => {
@@ -192,11 +179,19 @@ const SwipeYControl: React.FunctionComponent<ISwipeYControl> = ({ children }) =>
                 nowY = 0;
             }
         } else {
-            SYFSequenceEndScroll(e);
+            diff = Math.abs((height * level + base) - window.scrollY);
+            if (level == 0 && seqIndex == 0) {
+                scroll();
+            }
+            if (diff < 5 && diff > -5) {
+                document.body.classList.remove("no-scroll");
+                startY = 0;
+                nowY = 0;
+            } else if (Math.abs(nowY - startY) < 90) {
+                scroll();
+            }
         }
     }
-
-
     return (
         <div ref={elem}>
             {
@@ -204,7 +199,7 @@ const SwipeYControl: React.FunctionComponent<ISwipeYControl> = ({ children }) =>
                     accu.push(seq.map((elem: React.ReactNode) => {
                         return (
                             <Stack sx={{
-                                minHeight: "100vh",
+                                minHeight: innerHeigt ? innerHeigt : "100vh",
                                 opacity: "0.8",
                                 width: "100%",
                                 background: elem?.props.bg

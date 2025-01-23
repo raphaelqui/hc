@@ -12,6 +12,9 @@ import Nav from "@/components/atoms/Nav";
 import SwipeYControl from "@/components/atoms/SwipeYControl";
 import SwipeYFrame from "@/components/atoms/SwipeYFrame";
 import SwipeYHorizontal from "@/components/atoms/SwipeYHorizontal";
+import SwipeXYControl from "@/components/atoms/SwipeXYControl";
+import SwipeXYElement from "@/components/atoms/SwipeXYElement";
+import SwipeXYHorizontal from "@/components/atoms/SwipeXYHorizontal";
 
 export default function Home() {
 
@@ -68,63 +71,267 @@ export default function Home() {
   ];
 
   return (
-    <Stack
-      sx={{
-        width: "100%",
-        background: "linear-gradient(165deg, white 25%, #ffcccc 100%)"
-      }}>
+    <Stack>
 
+      <SwipeXYControl startXY="4/3">
 
-      <SwipeYControl>
-        {/* SwipeYFrame - Sequenz 1 */}
-        {...(sections.map(({ id, children, bg }) => {
-          return (<SwipeYFrame name={id} bg={bg}>{children}</SwipeYFrame>);
-        }))}
-        {/* SwipeYHorizontal - Sequenz 2 */}
-        <SwipeYHorizontal>
+        <SwipeXYElement>
           <Stack sx={{
-            height: 560,
+            minHeight: "100vh",
             width: "100%",
+            background: "linear-gradient(to top, #FAFFD1, #A1FFCE)",
+
           }}>
+
           </Stack>
-          <Typography>Hallo wie gehts?</Typography>
+        </SwipeXYElement>
+
+        <SwipeXYElement>
           <Stack sx={{
-            height: 560,
             width: "100%",
-          }}>
-          </Stack>
-        </SwipeYHorizontal>
-
-        {/* SwipeYFrame - Sequenz 3 */}
-        {...(sections.map(({ id, children, bg }) => {
-          return (<SwipeYFrame name={id} bg={bg}>{children}</SwipeYFrame>);
-        }))}
-        {/* SwipeYHorizontal - Sequenz 2 */}
-        <SwipeYHorizontal>
+            minHeight: "100vh",
+            background: "rgba(0,0,0,0.05)",
+          }}></Stack>
+        </SwipeXYElement>
+        <SwipeXYElement>
           <Stack sx={{
-            height: 560,
             width: "100%",
-          }}>
-          </Stack>
-          <Typography>Hallo wie gehts?</Typography>
+            minHeight: "100vh",
+            background: "rgba(0,0,0,0.05)",
+          }}></Stack>
+        </SwipeXYElement>
+
+
+        <SwipeXYHorizontal>
+          <SwipeXYElement>
+            <Stack sx={{
+              minHeight: "100%",
+              width: "100%",
+              background: "linear-gradient(to bottom, #eecda3, #ef629f)",
+            }}>
+              _horizontal_1
+            </Stack>
+          </SwipeXYElement>
+          <SwipeXYElement startX={true}>
+            <Stack sx={{
+              minHeight: "100%",
+              width: "100%",
+              background: "linear-gradient(to top, #FAFFD1, #A1FFCE)",
+            }}>
+              _horizontal_2
+            </Stack>
+          </SwipeXYElement>
+          <SwipeXYElement>
+            <Stack sx={{
+              minHeight: "100%",
+              width: "100%",
+              background: "linear-gradient(to top, #e0eafc, #cfdef3)",
+            }}>
+              _horizontal_3
+
+            </Stack>
+          </SwipeXYElement>
+          <SwipeXYElement>
+            <Stack sx={{
+              minHeight: "100%",
+              width: "100%",
+              background: "linear-gradient(to bottom, #eecda3, #ef629f)",
+            }}>
+              _horizontal_4
+            </Stack>
+          </SwipeXYElement>
+        </SwipeXYHorizontal>
+
+
+        <SwipeXYElement>
           <Stack sx={{
-            height: 560,
+            minHeight: "100%",
             width: "100%",
+            background: "linear-gradient(to bottom, #eecda3, #ef629f)",
           }}>
+            _vertical
           </Stack>
-        </SwipeYHorizontal>
-
-        {/* SwipeYFrame - Sequenz 3 */}
-        {...(sections.map(({ id, children, bg }) => {
-          return (<SwipeYFrame name={id} bg={bg}>{children}</SwipeYFrame>);
-        }))}
+        </SwipeXYElement>
 
 
-      </SwipeYControl>
+        <SwipeXYElement>
+          <Stack sx={{
+            minHeight: "100%",
+            width: "100%",
+            background: "linear-gradient(to bottom, #eecda3, #ef629f)",
+          }}>
+            _vertical
+          </Stack>
+        </SwipeXYElement>
 
+
+        <SwipeXYHorizontal>
+          <SwipeXYElement>
+            <Stack sx={{
+              minHeight: "100%",
+              width: "100%",
+              background: "linear-gradient(to bottom, #eecda3, #ef629f)",
+            }}>
+              _horizontal_1
+            </Stack>
+          </SwipeXYElement>
+          <SwipeXYElement>
+            <Stack sx={{
+              minHeight: "100%",
+              width: "100%",
+              background: "linear-gradient(to top, #FAFFD1, #A1FFCE)",
+            }}>
+              _horizontal_2
+            </Stack>
+          </SwipeXYElement>
+          <SwipeXYElement startX={true}>
+            <Stack sx={{
+              minHeight: "100%",
+              width: "100%",
+              background: "linear-gradient(to top, #FAFFD1, #A1FFCE)",
+            }}>
+              _horizontal_3
+            </Stack>
+          </SwipeXYElement>
+          <SwipeXYElement>
+            <Stack sx={{
+              minHeight: "100%",
+              width: "100%",
+              background: "linear-gradient(to top, #FAFFD1, #A1FFCE)",
+            }}>
+              _horizontal_4
+            </Stack>
+          </SwipeXYElement>
+          <SwipeXYElement>
+            <Stack sx={{
+              minHeight: "100%",
+              width: "100%",
+              background: "linear-gradient(to top, #FAFFD1, #A1FFCE)",
+            }}>
+              _horizontal_5
+            </Stack>
+          </SwipeXYElement>
+          <SwipeXYElement>
+            <Stack sx={{
+              minHeight: "100%",
+              width: "100%",
+              background: "linear-gradient(to top, #FAFFD1, #A1FFCE)",
+            }}>
+              _horizontal_6
+            </Stack>
+          </SwipeXYElement>
+        </SwipeXYHorizontal>
+
+
+        <SwipeXYElement>
+          <Stack sx={{
+            minHeight: "100%",
+            width: "100%",
+            background: "linear-gradient(to top, #FAFFD1, #A1FFCE)",
+          }}>
+            _vertical
+          </Stack>
+        </SwipeXYElement>
+
+        <SwipeXYElement>
+          <Stack sx={{
+            minHeight: "100%",
+            width: "100%",
+            background: "linear-gradient(to top, #FAFFD1, #A1FFCE)",
+          }}>
+            _vertical
+          </Stack>
+        </SwipeXYElement>
+
+        <SwipeXYElement>
+          <Stack sx={{
+            minHeight: "100%",
+            width: "100%",
+            background: "linear-gradient(to top, #FAFFD1, #A1FFCE)",
+          }}>
+            _vertical
+          </Stack>
+        </SwipeXYElement>
+
+        <SwipeXYHorizontal>
+          <SwipeXYElement>
+            <Stack sx={{
+              minHeight: "100%",
+              width: "100%",
+              background: "linear-gradient(to top, #FAFFD1, #A1FFCE)",
+            }}>
+              _horizontal_1
+            </Stack>
+          </SwipeXYElement>
+          <SwipeXYElement startX={true}>
+            <Stack sx={{
+              minHeight: "100%",
+              width: "100%",
+              background: "linear-gradient(to top, #FAFFD1, #A1FFCE)",
+            }}>
+              _horizontal_2
+            </Stack>
+          </SwipeXYElement>
+          <SwipeXYElement>
+            <Stack sx={{
+              minHeight: "100%",
+              width: "100%",
+              background: "linear-gradient(to top, #e0eafc, #cfdef3)",
+            }}>
+              _horizontal_3
+            </Stack>
+          </SwipeXYElement>
+        </SwipeXYHorizontal>
+
+      </SwipeXYControl>
+
+      {
+        /*
+        also hier haben wir jetzt die Matrix, wir können nun damit beginnen
+        die verschiedenen Elemente so programmieren, 
+     
+        snapschots 
+     
+     
+        <SwipeYControl>
+          {...(sections.map(({ id, children, bg }) => {
+            return (<SwipeYFrame name={id} bg={bg}>{children}</SwipeYFrame>);
+          }))}
+          <SwipeYHorizontal>
+            <Stack sx={{
+              height: 560,
+              width: "100%",
+            }}>
+            </Stack>
+            <Typography>Hallo wie gehts?</Typography>
+            <Stack sx={{
+              height: 560,
+              width: "100%",
+            }}>
+            </Stack>
+          </SwipeYHorizontal>
+          <SwipeYHorizontal>
+            <Stack sx={{
+              height: 560,
+              width: "100%",
+            }}>
+            </Stack>
+            <Typography>Hallo wie gehts?</Typography>
+            <Stack sx={{
+              height: 560,
+              width: "100%",
+            }}>
+            </Stack>
+          </SwipeYHorizontal>
+          {...(sections.map(({ id, children, bg }) => {
+            return (<SwipeYFrame name={id} bg={bg}>{children}</SwipeYFrame>);
+          }))}
+        </SwipeYControl>
+        */
+      }
       <Nav option={option} options={sections} />
 
 
-    </Stack>
+    </Stack >
   );
 }
