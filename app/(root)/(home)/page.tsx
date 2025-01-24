@@ -71,9 +71,14 @@ export default function Home() {
   ];
 
   return (
-    <Stack>
+    <Stack sx={{
+      position: "relative",
+      height: "100vh",
+      width: "100vw",
+    }}>
 
-      <SwipeXYControl startXY="4/3">
+
+      <SwipeXYControl startXY="2/5">
 
         <SwipeXYElement>
           <Stack sx={{

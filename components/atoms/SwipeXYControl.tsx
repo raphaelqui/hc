@@ -1,20 +1,26 @@
 import React, { useEffect, useState, useRef, forwardRef } from "react";
-
 import { Stack, Box } from "@mui/material";
-
 
 interface ISwipeXYControl {
     children: React.ReactNode;
     startXY?: string;
 }
-
 const convXY = (xy: string) => {
     return (xy.split("/")).map((num) => {
         return parseFloat(num);
     });
 }
-
-
+const getONC = (rowMajor: any[], cols: number, xy: string) => {
+    let resStr = "";
+    let x = convXY(xy)[0];
+    let y = convXY(xy)[1];
+    // up -> right -> down -> left
+    resStr += rowMajor[(y - 1) * cols + x] ? "1" : "0";
+    resStr += rowMajor[y * cols + x + 1] ? "1" : "0";
+    resStr += rowMajor[(y + 1) * cols + x] ? "1" : "0";
+    resStr += rowMajor[y * cols + x - 1] ? "1" : "0";
+    return resStr;
+}
 const printMatrix = (rowMajor: any, rows: number, cols: number) => {
     let tmpStr = "";
     let tmpIndex = 0;
@@ -32,9 +38,10 @@ const printMatrix = (rowMajor: any, rows: number, cols: number) => {
     console.log(tmpStr);
 }
 const SwipeXYControl: React.FunctionComponent<ISwipeXYControl> = ({ children, startXY = "0/0" }) => {
-
+    const sockel = useRef(null);
     const refs = [];
-    const [xy, setXY] = useState(startXY);
+    let x = convXY(startXY)[0];
+    let y = convXY(startXY)[1];
     let key: string = "";
     let rowMajor: any[] = [];
     let mid = 0;
@@ -48,114 +55,186 @@ const SwipeXYControl: React.FunctionComponent<ISwipeXYControl> = ({ children, st
     let startX = false;
     let isStartXSet = false;
     let tmpObj: any = {};
-    let cords: number[];
+    let onc: string;
     let scrollX = 0;
     let scrollY = 0;
-
     let viewStart: number = 0;
-    let elemStart: number = 0;
-    let elemEnd: number = 0;
-    let height: number = 0;
-    // - - - - - - - - - - - - - - - - -
     let viewEnd: number = 0;
-
-    /*OPEN_
-
-        -> schauen ob links, rechts, oben und unten offen ist?
-           das muss im muss jetzt schon geklärt werden!
-
-           was soll ich den machen wenn wir links keine weiteren Kacheln mehr
-           haben dann sollte ich irgendwie das Linksswipen stoppen
-
-        -> asl nächstes können wir noch ein neues feature schreiben welches
-           dafür sorgt wenn wir eine Kachel zu viel eingenommen haben circa 90px,
-           das ist absolut und es wird gescrollt egal wie groß eine Kachel ist.
-        -> garantieren dass der XY-String die verlangte Konvention nutzt!
-        -> ich kann nirgendwo das body element finden deswegen brauche ich 
-           das layout component zu manipulieren
-    */
+    let elemStartX: number = 0;
+    let elemEndX: number = 0;
+    let elemStartY: number = 0;
+    let elemEndY: number = 0;
+    let height: number = 0;
+    let lastScrollX = 0;
+    let lastScrollY = 0;
+    let jumping: boolean = false;
 
     useEffect(() => {
+        jump();
+    }, [rowMajor]);
+    const jump = () => {
         if (rowMajor.length) {
             scrollY = 0;
-            cords = convXY(xy);
-            scrollX = window.innerWidth * cords[0];
-            if (cords[1] > 0) {
-                for (let y = 0; y < cords[1]; y++) {
-                    key = `posi-${mid}x-${y}y-key`;
+            scrollX = window.innerWidth * x;
+            if (y > 0) {
+                for (let r = 0; r < y; r++) {
+                    key = `posi-${mid}x-${r}y-key`;
                     scrollY += refs[key].current.clientHeight;
                 }
             } else {
                 scrollY = 0;
             }
-            key = `posi-${cords[0]}x-${cords[1]}y-key`;
+            key = `posi-${x}x-${y}y-key`;
             height = refs[key].current.clientHeight;
-            elemStart = scrollY;
-            elemEnd = scrollY + height;
-
+            elemStartY = scrollY;
+            elemEndY = scrollY + height;
+            elemStartX = scrollX;
+            elemEndX = scrollX + window.innerWidth;
+            onc = getONC(rowMajor, cols, x + "/" + y);
             /*
-                x
-              x O -
-                x
-            */
+
+            TODOS
+            
+            -> bounce back muss auch programmiert werden
+
+            wenn ich das Matrix Ende erreicht habe dann möchte irgendwie 
+
+            -> der Initial-Sprung soll ohne smooth-behaviour ablaufen
+               ich will lediglich direkt die view auf diese Kachel,
+               vielleicht macht ich noch bone Komponenten hin, die das ganze 
+               verschönert, sodass der User nichts davon mitbekommt wie wir 
+               quasi ihn verarschen'
+
+            -> diese Komponente muss irgendwie mit der nav Komponente verknüpft werden
+
+            -> garantieren dass der XY-String die verlangte Konvention nutzt!
+
+            SIDEQUEST
+
+            -> übrigens whatsappbot bauen für ali:
+
+            -> spotify bots für ischu bauen
 
 
 
+            Content:
+            - die einzelnen Einträge sind Elemente mit eigener Höhe, aber manchmal
+            auch Kacheln
+            - Kacheln in Mobiler Ansicht gewinnen schließlich an height, bleiben
+            aber dieselben
+            - überdies müssen sollten die Kacheln immer etwas größer werden
+            - jedes Element wird benachrichtig wenn dieses aktiv ist
+             */
 
-            window.scrollTo(scrollX, scrollY);
+
+
+            sockel.current.style.overflowX = "hidden";
+            sockel.current.style.overflowY = "hidden";
+            sockel.current.scrollTo(scrollX, scrollY);
+            jumping = true;
         }
-    }, [xy, rowMajor]);
-
+    }
     useEffect(() => {
-        document.addEventListener("wheel", handleScrolling);
-        document.addEventListener("scrollend", handleEndScroll);
+        if (sockel.current) {
+            sockel.current.addEventListener("wheel", handleScrolling);
+            sockel.current.addEventListener("scrollend", handleEndScroll);
+            return () => {
+                sockel.current.addEventListener("wheel", handleScrolling);
+                sockel.current.addEventListener("scrollend", handleEndScroll);
+            };
+        }
     }, []);
-
-
-
-
-    let px: number = 0;
-
-    const handleScrolling = (e: any) => {
-        // console.log("x: " + convXY(xy)[0]);
-        // console.log("y: " + convXY(xy)[1]);
-        // key = `posi-${convXY(xy)[0]}x-${convXY(xy)[1]}y-key`;
-        // convXY -> [2, 1].join("/") später
-
-        // horizontal oder vertical ?
-
-        viewStart = Math.floor(window.scrollY);
-        viewEnd = Math.floor(window.scrollY + window.innerHeight);
-
-        if ((viewEnd - elemEnd) >= 90) {
-
-            // check matrix end
-            if (rowMajor[(convXY(xy)[1] + 1) * cols + convXY(xy)[0]]) {
-                console.log("further");
-                // setXY - y++:
-                setXY([convXY(xy)[0], (convXY(xy)[1] + 1)].join("/"));
-                // jump
+    const handleScrollingX = (e: any) => {
+        viewStart = sockel.current.scrollLeft
+        viewEnd = Math.floor(sockel.current.scrollLeft + window.innerWidth);
+        if ((viewEnd - elemEndX) >= 90) {
+            if (rowMajor[y * cols + (x + 1)]) {
+                x++;
+                jump();
+            } else {
+                jump();
             }
-
-
-        } else if ((elemStart - viewStart) >= 90) {
-
-            // check matrix end
-            console.log([convXY(xy)[0], (convXY(xy)[1] - 1)]);
-
-            if (rowMajor[(convXY(xy)[1] - 1) * cols + convXY(xy)[0]]) {
-                console.log("back");
-                // setXY - y--:
-                setXY([convXY(xy)[0], (convXY(xy)[1] - 1)].join("/"));
-                // jump
+        } else if ((elemStartX - viewStart) >= 90) {
+            // ob es im Matrix an diesem Platz ein element gibt kann ich auch mit 
+            // onc überprüfen!
+            if (rowMajor[y * cols + (x - 1)]) {
+                x--;
+                jump();
+            } else {
+                jump();
             }
-
         }
     }
-
-    const handleEndScroll = (e: any) => {
+    const handleScrollingY = (e: any) => {
+        viewStart = sockel.current.scrollTop
+        viewEnd = Math.floor(sockel.current.scrollTop + window.innerHeight);
+        if ((viewEnd - elemEndY) >= 90) {
+            if (rowMajor[(y + 1) * cols + x]) {
+                y++;
+                jump();
+            } else {
+                jump();
+            }
+        } else if ((elemStartY - viewStart) >= 90) {
+            if (rowMajor[(y - 1) * cols + x]) {
+                y--;
+                jump();
+            } else {
+                jump();
+            }
+        }
     }
-
+    const handleScrolling = (e: any) => {
+        if (jumping) {
+            return 0;
+        }
+        const currentScrollX = sockel.current.scrollLeft;
+        const currentScrollY = sockel.current.scrollTop;
+        const deltaX = Math.abs(currentScrollX - lastScrollX);
+        const deltaY = Math.abs(currentScrollY - lastScrollY);
+        if (deltaX !== 0 && deltaY !== 0 && lastScrollX !== 0 && lastScrollY !== 0) {
+            /* BLOCK DIAGONAL SCROLLING  */
+            sockel.current.scrollTo(scrollX, scrollY);
+            sockel.current.style.overflowX = "hidden";
+            sockel.current.style.overflowY = "hidden";
+            setTimeout(() => {
+                sockel.current.style.overflowX = "scroll";
+                sockel.current.style.overflowY = "scroll";
+            }, 100);
+            return;
+        } else if (Math.abs(deltaX) > Math.abs(deltaY)) {
+            /* HORIZONTAL */
+            handleScrollingX(e);
+        } else if (Math.abs(deltaY) > Math.abs(deltaX)) {
+            /* VERTICAL */
+            handleScrollingY(e);
+        }
+        lastScrollX = currentScrollX;
+        lastScrollY = currentScrollY;
+    }
+    const handleEndScroll = (e: any) => {
+        if (jumping && Math.abs(elemStartY - e.srcElement.scrollTop) < 5 && Math.abs(elemStartX - e.srcElement.scrollLeft) > -5 && Math.abs(elemStartX - e.srcElement.scrollLeft) < 5 && Math.abs(elemStartY - e.srcElement.scrollTop) > -5) {
+            jumping = false;
+            if (onc[0] == 1 || onc[2] == 1) {
+                sockel.current.style.overflowY = "scroll";
+            }
+            if (onc[1] == 1 || onc[3] == 1) {
+                sockel.current.style.overflowX = "scroll";
+            }
+        } else if (!jumping) {
+            sockel.current.scrollTo(scrollX, scrollY);
+            sockel.current.style.overflowX = "hidden";
+            sockel.current.style.overflowY = "hidden";
+            setTimeout(() => {
+                if (onc[0] == 1 || onc[2] == 1) {
+                    sockel.current.style.overflowY = "scroll";
+                }
+                if (onc[1] == 1 || onc[3] == 1) {
+                    sockel.current.style.overflowX = "scroll";
+                }
+            }, 100);
+        }
+    }
     for (let i = 0; i < rows; i++) {
         if (children[i].type.name == "SwipeXYHorizontal" && children[i].props.children) {
             if (children[i].props.children.length) {
@@ -255,60 +334,66 @@ const SwipeXYControl: React.FunctionComponent<ISwipeXYControl> = ({ children, st
         }
     }
     printMatrix(rowMajor, rows, cols);
-    /*
-        Content:
-            - die einzelnen Einträge sind Elemente mit eigener Höhe, aber manchmal
-            auch Kacheln
-            - Kacheln in Mobiler Ansicht gewinnen schließlich an height, bleiben
-            aber dieselben
-            - überdies müssen sollten die Kacheln immer etwas größer werden
-            - jedes Element wird benachrichtig wenn dieses aktiv ist
-    */
-
     let tmpVW: number = 0;
     let c = 0;
     let start = 0;
     let tmpArr = [];
-    return (rowMajor.reduce((accu, elem) => {
-        if (elem == 0) {
-            tmpVW += 1;
-        } else {
-            if (tmpVW > 0) {
-                accu.push(<Box sx={{
-                    width: tmpVW + "00vw",
-                    flexShrink: 0,
-                }} ></Box>)
-            }
-            accu.push(elem);
-            tmpVW = 0;
-        }
-        if (c == cols - 1) {
-            tmpVW = 0;
-            c = 0;
-            accu.push(0);
-        } else {
-            c++;
-        }
-        return accu;
-    }, [])).reduce((accu: any, elem: any) => {
-        if (elem == 0) {
-            tmpArr = accu.splice(start);
-            accu.push(tmpArr);
-            start++;
-        } else {
-            accu.push(elem);
-        }
-        return accu;
-    }, []).map((row: any, rowIndex: number) => {
-        return (
-            <Stack key={`row-${rowIndex}`} direction={"row"} sx={{
-                position: "relative",
-                height: "100%",
-            }}>
-                {row}
-            </Stack >
-        )
-    });
+    return (
+        <Stack className="scroll" ref={sockel} sx={{
+            position: "relative",
+            top: 0,
+            left: 0,
+            height: "100%",
+            width: "100%",
+            overflowX: "scroll",
+            overflowY: "scroll",
+            scrollBehavior: "smooth"
+        }}>
+            {(rowMajor.reduce((accu, elem) => {
+                if (elem == 0) {
+                    tmpVW += 1;
+                } else {
+                    if (tmpVW > 0) {
+                        accu.push(<Box sx={{
+                            width: tmpVW + "00vw",
+                            flexShrink: 0,
+                        }} ></Box>)
+                    }
+                    accu.push(elem);
+                    tmpVW = 0;
+                }
+                if (c == cols - 1) {
+                    tmpVW = 0;
+                    c = 0;
+                    accu.push(0);
+                } else {
+                    c++;
+                }
+                return accu;
+            }, [])).reduce((accu: any, elem: any) => {
+                if (elem == 0) {
+                    tmpArr = accu.splice(start);
+                    accu.push(tmpArr);
+                    start++;
+                } else {
+                    accu.push(elem);
+                }
+                return accu;
+            }, []).map((row: any, rowIndex: number) => {
+                return (
+                    <Stack key={`row-${rowIndex}`} direction={"row"} sx={{
+                        position: "relative",
+                        height: "100%",
+                    }}>
+                        {row}
+                    </Stack >
+                )
+            })}
+        </Stack >
+    )
+
+
+
 }
 
 export default SwipeXYControl;

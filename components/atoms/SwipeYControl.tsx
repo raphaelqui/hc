@@ -61,7 +61,6 @@ const SwipeYControl: React.FunctionComponent<ISwipeYControl> = ({ children }) =>
     const changeSequence = () => {
         level = 0;
         if (sequences[seqIndex][0].type.name == "SwipeYFrame") {
-
             sequenceSYFLevels = sequences[seqIndex].length;
         } else {
             sequenceSYFLevels = 0;
