@@ -10,10 +10,12 @@ const Button: React.FunctionComponent<IButton> = ({ children, round }) => {
     return (
         <Stack sx={{
             cursor: "pointer",
-            px: 1.1,
-            py: 0.65,
-            bgcolor: "#d2dae2",
+            px: 2,
+            py: 0.75,
+            border: "2px solid rgba(1, 1, 1, 0.1)",
+            borderBottom: "3px solid rgba(1, 1, 1, 0.1)",
             position: "relative",
+            borderRadius: "6px"
         }}>
 
             {children}

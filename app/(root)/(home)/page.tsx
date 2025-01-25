@@ -1,17 +1,8 @@
 /** @format */
 "use client";
-import { TransitionGroup } from "react-transition-group";
 import React, { useEffect, useState } from "react";
-import { Stack, Box, Typography, Hidden } from "@mui/material";
-import NativePageSwitch from "@/components/molecules/NativePageSwitch";
-import NativePage from "@/components/atoms/NativePage";
-import the9th_logo from "@/assets/THE9TH_LOGO.svg";
-import Image from "next/image";
-import Badge from "@/components/atoms/Badge";
+import { Stack } from "@mui/material";
 import Nav from "@/components/atoms/Nav";
-import SwipeYControl from "@/components/atoms/SwipeYControl";
-import SwipeYFrame from "@/components/atoms/SwipeYFrame";
-import SwipeYHorizontal from "@/components/atoms/SwipeYHorizontal";
 import SwipeXYControl from "@/components/atoms/SwipeXYControl";
 import SwipeXYElement from "@/components/atoms/SwipeXYElement";
 import SwipeXYHorizontal from "@/components/atoms/SwipeXYHorizontal";
@@ -33,40 +24,26 @@ export default function Home() {
       };
     }, []);
   };
-
   useHashChange();
-
   const sections = [
     {
       text: "Start",
       id: "start",
-      bg: "blue",
-      children: (<></>) // diese children hier finden sich im organisms folder betrachten?
     }, {
       text: "Für Kunden",
       id: "customer",
-      bg: "linear-gradient(to top, #FAFFD1, #A1FFCE)",
-      children: (<></>)
     }, {
       text: "Für Mitarbeiter",
       id: "employees",
-      bg: "linear-gradient(to bottom, #eecda3, #ef629f)",
-      children: (<></>)
     }, {
       text: "Kontaktinfos",
       id: "contact",
-      children: (<></>),
-      bg: "linear-gradient(to top, #eecda3, #ef629f)",
     }, {
       text: "Stellenangebote",
       id: "hiring",
-      bg: "linear-gradient(to bottom, #eecda3, #ef629f)",
-      children: (<></>)
     }, {
       text: "Das Team",
       id: "team",
-      bg: "linear-gradient(to top, #e0eafc, #cfdef3)",
-      children: (<></>)
     }
   ];
 
@@ -78,7 +55,7 @@ export default function Home() {
     }}>
 
 
-      <SwipeXYControl startXY="2/5">
+      <SwipeXYControl startXY="2/3">
 
         <SwipeXYElement>
           <Stack sx={{
@@ -290,50 +267,6 @@ export default function Home() {
 
       </SwipeXYControl>
 
-      {
-        /*
-        also hier haben wir jetzt die Matrix, wir können nun damit beginnen
-        die verschiedenen Elemente so programmieren, 
-     
-        snapschots 
-     
-     
-        <SwipeYControl>
-          {...(sections.map(({ id, children, bg }) => {
-            return (<SwipeYFrame name={id} bg={bg}>{children}</SwipeYFrame>);
-          }))}
-          <SwipeYHorizontal>
-            <Stack sx={{
-              height: 560,
-              width: "100%",
-            }}>
-            </Stack>
-            <Typography>Hallo wie gehts?</Typography>
-            <Stack sx={{
-              height: 560,
-              width: "100%",
-            }}>
-            </Stack>
-          </SwipeYHorizontal>
-          <SwipeYHorizontal>
-            <Stack sx={{
-              height: 560,
-              width: "100%",
-            }}>
-            </Stack>
-            <Typography>Hallo wie gehts?</Typography>
-            <Stack sx={{
-              height: 560,
-              width: "100%",
-            }}>
-            </Stack>
-          </SwipeYHorizontal>
-          {...(sections.map(({ id, children, bg }) => {
-            return (<SwipeYFrame name={id} bg={bg}>{children}</SwipeYFrame>);
-          }))}
-        </SwipeYControl>
-        */
-      }
       <Nav option={option} options={sections} />
 
 

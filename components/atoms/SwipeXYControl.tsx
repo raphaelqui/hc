@@ -68,7 +68,6 @@ const SwipeXYControl: React.FunctionComponent<ISwipeXYControl> = ({ children, st
     let lastScrollX = 0;
     let lastScrollY = 0;
     let jumping: boolean = false;
-
     useEffect(() => {
         jump();
     }, [rowMajor]);
@@ -92,30 +91,17 @@ const SwipeXYControl: React.FunctionComponent<ISwipeXYControl> = ({ children, st
             elemEndX = scrollX + window.innerWidth;
             onc = getONC(rowMajor, cols, x + "/" + y);
             /*
-
             TODOS
-            
-            -> bounce back muss auch programmiert werden
-
-            wenn ich das Matrix Ende erreicht habe dann möchte irgendwie 
-
-            -> der Initial-Sprung soll ohne smooth-behaviour ablaufen
-               ich will lediglich direkt die view auf diese Kachel,
-               vielleicht macht ich noch bone Komponenten hin, die das ganze 
-               verschönert, sodass der User nichts davon mitbekommt wie wir 
-               quasi ihn verarschen'
 
             -> diese Komponente muss irgendwie mit der nav Komponente verknüpft werden
-
-            -> garantieren dass der XY-String die verlangte Konvention nutzt!
+            -> sidemenu mit hamburger öffnen
+                -> der Bereich welcher übrig bleibt der wird für das clickAway verwendet
+            -> kachel wird aktiv wenn wir es fokussieren!
+            -> jetzt auch noch ein horizontales lagging fuck
 
             SIDEQUEST
-
             -> übrigens whatsappbot bauen für ali:
-
             -> spotify bots für ischu bauen
-
-
 
             Content:
             - die einzelnen Einträge sind Elemente mit eigener Höhe, aber manchmal
@@ -125,9 +111,6 @@ const SwipeXYControl: React.FunctionComponent<ISwipeXYControl> = ({ children, st
             - überdies müssen sollten die Kacheln immer etwas größer werden
             - jedes Element wird benachrichtig wenn dieses aktiv ist
              */
-
-
-
             sockel.current.style.overflowX = "hidden";
             sockel.current.style.overflowY = "hidden";
             sockel.current.scrollTo(scrollX, scrollY);
@@ -145,7 +128,7 @@ const SwipeXYControl: React.FunctionComponent<ISwipeXYControl> = ({ children, st
         }
     }, []);
     const handleScrollingX = (e: any) => {
-        viewStart = sockel.current.scrollLeft
+        viewStart = sockel.current.scrollLeft;
         viewEnd = Math.floor(sockel.current.scrollLeft + window.innerWidth);
         if ((viewEnd - elemEndX) >= 90) {
             if (rowMajor[y * cols + (x + 1)]) {
@@ -155,8 +138,6 @@ const SwipeXYControl: React.FunctionComponent<ISwipeXYControl> = ({ children, st
                 jump();
             }
         } else if ((elemStartX - viewStart) >= 90) {
-            // ob es im Matrix an diesem Platz ein element gibt kann ich auch mit 
-            // onc überprüfen!
             if (rowMajor[y * cols + (x - 1)]) {
                 x--;
                 jump();
@@ -212,6 +193,7 @@ const SwipeXYControl: React.FunctionComponent<ISwipeXYControl> = ({ children, st
         lastScrollX = currentScrollX;
         lastScrollY = currentScrollY;
     }
+    let bounceBack: boolean = false;
     const handleEndScroll = (e: any) => {
         if (jumping && Math.abs(elemStartY - e.srcElement.scrollTop) < 5 && Math.abs(elemStartX - e.srcElement.scrollLeft) > -5 && Math.abs(elemStartX - e.srcElement.scrollLeft) < 5 && Math.abs(elemStartY - e.srcElement.scrollTop) > -5) {
             jumping = false;
@@ -221,10 +203,10 @@ const SwipeXYControl: React.FunctionComponent<ISwipeXYControl> = ({ children, st
             if (onc[1] == 1 || onc[3] == 1) {
                 sockel.current.style.overflowX = "scroll";
             }
-        } else if (!jumping) {
-            sockel.current.scrollTo(scrollX, scrollY);
+        } else if (!jumping && !bounceBack) {
             sockel.current.style.overflowX = "hidden";
             sockel.current.style.overflowY = "hidden";
+            sockel.current.scrollTo(scrollX, scrollY);
             setTimeout(() => {
                 if (onc[0] == 1 || onc[2] == 1) {
                     sockel.current.style.overflowY = "scroll";
@@ -232,6 +214,7 @@ const SwipeXYControl: React.FunctionComponent<ISwipeXYControl> = ({ children, st
                 if (onc[1] == 1 || onc[3] == 1) {
                     sockel.current.style.overflowX = "scroll";
                 }
+
             }, 100);
         }
     }
