@@ -39,10 +39,10 @@ const theme = createTheme({
       color: 'red'
     },
     subtitle1: {
-      color: 'white',
+      color: 'black',
       fontSize: '1rem',
       fontFamily: 'roboto mono',
-      fontWeight: 500
+      fontWeight: 300
     },
     subtitle2: {
       color: palette.lightYellow,

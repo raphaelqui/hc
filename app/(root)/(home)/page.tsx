@@ -6,44 +6,59 @@ import Nav from "@/components/atoms/Nav";
 import SwipeXYControl from "@/components/atoms/SwipeXYControl";
 import SwipeXYElement from "@/components/atoms/SwipeXYElement";
 import SwipeXYHorizontal from "@/components/atoms/SwipeXYHorizontal";
-
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
+import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined';
+import ConnectWithoutContactOutlinedIcon from '@mui/icons-material/ConnectWithoutContactOutlined';
+import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
+import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 export default function Home() {
 
-  const [option, setOption] = useState(0);
-
-  const useHashChange = () => {
-    useEffect(() => {
-      const handleHashChange = () => {
-        alert("" + window.location.hash);
-      };
-
-      window.addEventListener('hashchange', handleHashChange);
-
-      return () => {
-        window.removeEventListener('hashchange', handleHashChange);
-      };
-    }, []);
-  };
-  useHashChange();
-  const sections = [
+  /*
+    PROJEKT-TODOS
+      -> wie bekomme ich die <SwipeXYControl> Komponente dazu
+         das diese nicht mehr doppelt rendert?
+      
+  
+  */
+  const [xy, setXY] = useState("2/0");
+  let options = [
     {
       text: "Start",
+      icon: HomeOutlinedIcon,
       id: "start",
+      xy: "2/0",
+      active: xy == "2/0",
     }, {
       text: "Für Kunden",
+      icon: GroupOutlinedIcon,
       id: "customer",
+      xy: "2/1",
+      active: xy == "2/1",
     }, {
       text: "Für Mitarbeiter",
+      icon: BadgeOutlinedIcon,
       id: "employees",
+      xy: "2/2",
+      active: xy == "2/2",
     }, {
       text: "Kontaktinfos",
+      icon: ConnectWithoutContactOutlinedIcon,
       id: "contact",
+      xy: "2/3",
+      active: xy == "2/3",
     }, {
       text: "Stellenangebote",
+      icon: PersonAddAltOutlinedIcon,
       id: "hiring",
+      xy: "2/4",
+      active: xy == "2/4",
     }, {
       text: "Das Team",
+      icon: GroupsOutlinedIcon,
       id: "team",
+      xy: "2/5",
+      active: xy == "2/5",
     }
   ];
 
@@ -54,8 +69,9 @@ export default function Home() {
       width: "100vw",
     }}>
 
-
-      <SwipeXYControl startXY="2/3">
+      <SwipeXYControl xy={xy} changeXY={(str: string) => {
+        setXY(str);
+      }} >
 
         <SwipeXYElement>
           <Stack sx={{
@@ -267,7 +283,9 @@ export default function Home() {
 
       </SwipeXYControl>
 
-      <Nav option={option} options={sections} />
+      <Nav options={options} changeXY={(str: string) => {
+        setXY(str);
+      }} />
 
 
     </Stack >

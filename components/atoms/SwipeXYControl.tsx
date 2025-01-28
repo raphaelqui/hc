@@ -1,10 +1,27 @@
 import React, { useEffect, useState, useRef, forwardRef } from "react";
 import { Stack, Box } from "@mui/material";
+/*
+     TODOS
 
-interface ISwipeXYControl {
-    children: React.ReactNode;
-    startXY?: string;
-}
+     -> diese Komponente muss irgendwie mit der nav Komponente verknüpft werden
+     -> sidemenu mit hamburger öffnen
+         
+     -> kachel wird aktiv wenn wir es fokussieren!
+
+
+     SIDEQUEST
+     -> übrigens whatsappbot bauen für ali:
+     -> spotify bots für ischu bauen
+
+     Content:
+     - die einzelnen Einträge sind Elemente mit eigener Höhe, aber manchmal
+     auch Kacheln
+     - Kacheln in Mobiler Ansicht gewinnen schließlich an height, bleiben
+     aber dieselben
+     - überdies müssen sollten die Kacheln immer etwas größer werden
+     - jedes Element wird benachrichtig wenn dieses aktiv ist
+      */
+
 const convXY = (xy: string) => {
     return (xy.split("/")).map((num) => {
         return parseFloat(num);
@@ -37,11 +54,21 @@ const printMatrix = (rowMajor: any, rows: number, cols: number) => {
     }
     console.log(tmpStr);
 }
-const SwipeXYControl: React.FunctionComponent<ISwipeXYControl> = ({ children, startXY = "0/0" }) => {
-    const sockel = useRef(null);
+interface ISwipeXYControl {
+    children: React.ReactNode;
+    xy?: string;
+    changeXY: (str: string) => void
+}
+const SwipeXYControl: React.FunctionComponent<ISwipeXYControl> = ({ children, xy = "0/0", changeXY }) => {
+
+    // cords
+    const [x, setX] = useState(convXY(xy)[0]);
+    const [y, setY] = useState(convXY(xy)[1]);
+
+    // refs 
+    const sockelRef = useRef(null);
     const refs = [];
-    let x = convXY(startXY)[0];
-    let y = convXY(startXY)[1];
+
     let key: string = "";
     let rowMajor: any[] = [];
     let mid = 0;
@@ -55,169 +82,136 @@ const SwipeXYControl: React.FunctionComponent<ISwipeXYControl> = ({ children, st
     let startX = false;
     let isStartXSet = false;
     let tmpObj: any = {};
-    let onc: string;
-    let scrollX = 0;
-    let scrollY = 0;
-    let viewStart: number = 0;
-    let viewEnd: number = 0;
-    let elemStartX: number = 0;
-    let elemEndX: number = 0;
-    let elemStartY: number = 0;
-    let elemEndY: number = 0;
-    let height: number = 0;
-    let lastScrollX = 0;
-    let lastScrollY = 0;
-    let jumping: boolean = false;
-    useEffect(() => {
-        jump();
-    }, [rowMajor]);
-    const jump = () => {
-        if (rowMajor.length) {
-            scrollY = 0;
-            scrollX = window.innerWidth * x;
-            if (y > 0) {
-                for (let r = 0; r < y; r++) {
-                    key = `posi-${mid}x-${r}y-key`;
-                    scrollY += refs[key].current.clientHeight;
-                }
-            } else {
-                scrollY = 0;
+    const computeScroll = () => {
+        const scrollX = window.innerWidth * x;
+        let scrollY = 0;
+        if (y > 0) {
+            for (let r = 0; r < y; r++) {
+                key = `posi-${mid}x-${r}y-key`;
+                scrollY += refs[key].current.clientHeight;
             }
-            key = `posi-${x}x-${y}y-key`;
-            height = refs[key].current.clientHeight;
-            elemStartY = scrollY;
-            elemEndY = scrollY + height;
-            elemStartX = scrollX;
-            elemEndX = scrollX + window.innerWidth;
-            onc = getONC(rowMajor, cols, x + "/" + y);
-            /*
-            TODOS
-
-            -> diese Komponente muss irgendwie mit der nav Komponente verknüpft werden
-            -> sidemenu mit hamburger öffnen
-                -> der Bereich welcher übrig bleibt der wird für das clickAway verwendet
-            -> kachel wird aktiv wenn wir es fokussieren!
-            -> jetzt auch noch ein horizontales lagging fuck
-
-            SIDEQUEST
-            -> übrigens whatsappbot bauen für ali:
-            -> spotify bots für ischu bauen
-
-            Content:
-            - die einzelnen Einträge sind Elemente mit eigener Höhe, aber manchmal
-            auch Kacheln
-            - Kacheln in Mobiler Ansicht gewinnen schließlich an height, bleiben
-            aber dieselben
-            - überdies müssen sollten die Kacheln immer etwas größer werden
-            - jedes Element wird benachrichtig wenn dieses aktiv ist
-             */
-            sockel.current.style.overflowX = "hidden";
-            sockel.current.style.overflowY = "hidden";
-            sockel.current.scrollTo(scrollX, scrollY);
-            jumping = true;
         }
+        return [scrollX, scrollY];
     }
     useEffect(() => {
-        if (sockel.current) {
-            sockel.current.addEventListener("wheel", handleScrolling);
-            sockel.current.addEventListener("scrollend", handleEndScroll);
-            return () => {
-                sockel.current.addEventListener("wheel", handleScrolling);
-                sockel.current.addEventListener("scrollend", handleEndScroll);
-            };
-        }
-    }, []);
-    const handleScrollingX = (e: any) => {
-        viewStart = sockel.current.scrollLeft;
-        viewEnd = Math.floor(sockel.current.scrollLeft + window.innerWidth);
-        if ((viewEnd - elemEndX) >= 90) {
-            if (rowMajor[y * cols + (x + 1)]) {
-                x++;
-                jump();
-            } else {
-                jump();
-            }
-        } else if ((elemStartX - viewStart) >= 90) {
-            if (rowMajor[y * cols + (x - 1)]) {
-                x--;
-                jump();
-            } else {
-                jump();
-            }
-        }
-    }
-    const handleScrollingY = (e: any) => {
-        viewStart = sockel.current.scrollTop
-        viewEnd = Math.floor(sockel.current.scrollTop + window.innerHeight);
-        if ((viewEnd - elemEndY) >= 90) {
-            if (rowMajor[(y + 1) * cols + x]) {
-                y++;
-                jump();
-            } else {
-                jump();
-            }
-        } else if ((elemStartY - viewStart) >= 90) {
-            if (rowMajor[(y - 1) * cols + x]) {
-                y--;
-                jump();
-            } else {
-                jump();
-            }
-        }
-    }
-    const handleScrolling = (e: any) => {
-        if (jumping) {
-            return 0;
-        }
-        const currentScrollX = sockel.current.scrollLeft;
-        const currentScrollY = sockel.current.scrollTop;
-        const deltaX = Math.abs(currentScrollX - lastScrollX);
-        const deltaY = Math.abs(currentScrollY - lastScrollY);
-        if (deltaX !== 0 && deltaY !== 0 && lastScrollX !== 0 && lastScrollY !== 0) {
-            /* BLOCK DIAGONAL SCROLLING  */
-            sockel.current.scrollTo(scrollX, scrollY);
-            sockel.current.style.overflowX = "hidden";
-            sockel.current.style.overflowY = "hidden";
-            setTimeout(() => {
-                sockel.current.style.overflowX = "scroll";
-                sockel.current.style.overflowY = "scroll";
-            }, 100);
-            return;
-        } else if (Math.abs(deltaX) > Math.abs(deltaY)) {
-            /* HORIZONTAL */
-            handleScrollingX(e);
-        } else if (Math.abs(deltaY) > Math.abs(deltaX)) {
-            /* VERTICAL */
-            handleScrollingY(e);
-        }
-        lastScrollX = currentScrollX;
-        lastScrollY = currentScrollY;
-    }
-    let bounceBack: boolean = false;
-    const handleEndScroll = (e: any) => {
-        if (jumping && Math.abs(elemStartY - e.srcElement.scrollTop) < 5 && Math.abs(elemStartX - e.srcElement.scrollLeft) > -5 && Math.abs(elemStartX - e.srcElement.scrollLeft) < 5 && Math.abs(elemStartY - e.srcElement.scrollTop) > -5) {
-            jumping = false;
-            if (onc[0] == 1 || onc[2] == 1) {
-                sockel.current.style.overflowY = "scroll";
-            }
-            if (onc[1] == 1 || onc[3] == 1) {
-                sockel.current.style.overflowX = "scroll";
-            }
-        } else if (!jumping && !bounceBack) {
-            sockel.current.style.overflowX = "hidden";
-            sockel.current.style.overflowY = "hidden";
-            sockel.current.scrollTo(scrollX, scrollY);
-            setTimeout(() => {
-                if (onc[0] == 1 || onc[2] == 1) {
-                    sockel.current.style.overflowY = "scroll";
+        const sockel = sockelRef.current;
+        const handleScrollX = () => {
+            const elemStartX = computeScroll()[0];
+            const elemEndX = computeScroll()[0] + window.innerWidth;
+            const viewStart = sockel.scrollLeft;
+            const viewEnd = sockel.scrollLeft + window.innerWidth;
+            if ((viewEnd - elemEndX) >= 90) {
+                if (rowMajor[y * cols + (x + 1)]) {
+                    setX((prevX) => {
+                        changeXY((prevX + 1) + "/" + y);
+                        return prevX + 1;
+                    });
+                } else {
+                    scroll();
                 }
-                if (onc[1] == 1 || onc[3] == 1) {
-                    sockel.current.style.overflowX = "scroll";
+            } else if ((elemStartX - viewStart) >= 90) {
+                if (rowMajor[y * cols + (x - 1)]) {
+                    setX((prevX) => {
+                        changeXY((prevX - 1) + "/" + y);
+                        return prevX - 1;
+                    });
+                } else {
+                    scroll();
                 }
+            }
+        }
+        const handleScrollY = () => {
+            const key = `posi-${x}x-${y}y-key`;
+            const elemStartY = computeScroll()[1];
+            const elemEndY = refs[key].current.clientHeight + computeScroll()[1];
+            const viewStart = sockel.scrollTop
+            const viewEnd = Math.floor(sockel.scrollTop + window.innerHeight);
+            if ((viewEnd - elemEndY) >= 90) {
+                if (rowMajor[(y + 1) * cols + x]) {
+                    setY((prevY) => {
+                        changeXY(x + "/" + (prevY + 1));
+                        return prevY + 1;
 
-            }, 100);
+                    });
+                } else {
+                    scroll();
+                }
+            } else if ((elemStartY - viewStart) >= 90) {
+                if (rowMajor[(y - 1) * cols + x]) {
+                    setY((prevY) => {
+                        changeXY(x + "/" + (prevY - 1));
+                        return prevY - 1;
+                    });
+                } else {
+                    scroll();
+                }
+            }
         }
-    }
+        let lastScrollX = 0;
+        let lastScrollY = 0;
+        const handleScroll = () => {
+            if (!sockel) return;
+            const currentScrollX = sockel.scrollLeft;
+            const currentScrollY = sockel.scrollTop;
+            const deltaX = Math.abs(currentScrollX - lastScrollX);
+            const deltaY = Math.abs(currentScrollY - lastScrollY);
+            if (deltaX !== 0 && deltaY !== 0 && lastScrollX !== 0 && lastScrollY !== 0) {
+                sockel.scrollTo(...computeScroll());
+                sockel.style.overflowX = "hidden";
+                sockel.style.overflowY = "hidden";
+                setTimeout(() => {
+                    sockel.style.overflowX = "scroll";
+                    sockel.style.overflowY = "scroll";
+                }, 100);
+                return;
+            } else if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                handleScrollX();
+            } else if (Math.abs(deltaY) > Math.abs(deltaX)) {
+                handleScrollY();
+            }
+            lastScrollX = currentScrollX;
+            lastScrollY = currentScrollY;
+        }
+
+        const handleEndScroll = () => {
+            const onc = getONC(rowMajor, cols, x + "/" + y);
+            const elemStartX = computeScroll()[0];
+            const elemStartY = computeScroll()[1];
+            if (Math.abs(elemStartY - sockel.scrollTop) < 5 && Math.abs(elemStartX - sockel.scrollLeft) > -5 && Math.abs(elemStartX - sockel.scrollLeft) < 5 && Math.abs(elemStartY - sockel.scrollTop) > -5) {
+                console.log(onc);
+                if (onc[0] == "1" || onc[2] == "1") {
+                    sockel.style.overflowY = "scroll";
+                }
+                if (onc[1] == "1" || onc[3] == "1") {
+                    sockel.style.overflowX = "scroll";
+                }
+                console.log("logo");
+                return sockel?.addEventListener("wheel", handleScroll);
+            } else {
+                scroll();
+            }
+        }
+        const scroll = () => {
+            if (!sockel) return;
+            console.log("springe...");
+            console.log("scroll: " + computeScroll()[0] + "x" + computeScroll()[1] + "y");
+            sockel.style.overflowX = "hidden";
+            sockel.style.overflowY = "hidden";
+            sockel.scrollTo(...computeScroll());
+        }
+        scroll();
+        sockel?.addEventListener("scrollend", handleEndScroll);
+        return () => {
+            sockel?.removeEventListener("wheel", handleScroll);
+            sockel?.removeEventListener("scrollend", handleEndScroll);
+        }
+    }, [x, y]);
+
+    useEffect(() => {
+        setX(convXY(xy)[0]);
+        setY(convXY(xy)[1]);
+    }, [xy])
+
     for (let i = 0; i < rows; i++) {
         if (children[i].type.name == "SwipeXYHorizontal" && children[i].props.children) {
             if (children[i].props.children.length) {
@@ -322,7 +316,7 @@ const SwipeXYControl: React.FunctionComponent<ISwipeXYControl> = ({ children, st
     let start = 0;
     let tmpArr = [];
     return (
-        <Stack className="scroll" ref={sockel} sx={{
+        <Stack className="scroll" ref={sockelRef} sx={{
             position: "relative",
             top: 0,
             left: 0,
@@ -337,7 +331,7 @@ const SwipeXYControl: React.FunctionComponent<ISwipeXYControl> = ({ children, st
                     tmpVW += 1;
                 } else {
                     if (tmpVW > 0) {
-                        accu.push(<Box sx={{
+                        accu.push(<Box key={'void-' + elem.key} sx={{
                             width: tmpVW + "00vw",
                             flexShrink: 0,
                         }} ></Box>)
