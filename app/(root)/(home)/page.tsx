@@ -1,7 +1,7 @@
 /** @format */
 "use client";
 import React, { useEffect, useState } from "react";
-import { Stack } from "@mui/material";
+import { Stack, Box, Typography } from "@mui/material";
 import Nav from "@/components/atoms/Nav";
 import SwipeXYControl from "@/components/atoms/SwipeXYControl";
 import SwipeXYElement from "@/components/atoms/SwipeXYElement";
@@ -18,47 +18,49 @@ export default function Home() {
     PROJEKT-TODOS
       -> wie bekomme ich die <SwipeXYControl> Komponente dazu
          das diese nicht mehr doppelt rendert?
+
+      -> als nächstes schauen wir uns den onc-Fall genauer an.
       
   
   */
-  const [xy, setXY] = useState("2/0");
+  const [xy, setXY] = useState("0/0");
   let options = [
     {
       text: "Start",
       icon: HomeOutlinedIcon,
       id: "start",
-      xy: "2/0",
-      active: xy == "2/0",
+      xy: "3/0",
+      active: xy == "3/0",
     }, {
       text: "Für Kunden",
       icon: GroupOutlinedIcon,
       id: "customer",
-      xy: "2/1",
-      active: xy == "2/1",
+      xy: "3/1",
+      active: xy == "3/1",
     }, {
       text: "Für Mitarbeiter",
       icon: BadgeOutlinedIcon,
       id: "employees",
-      xy: "2/2",
-      active: xy == "2/2",
+      xy: "3/2",
+      active: xy == "3/2",
     }, {
       text: "Kontaktinfos",
       icon: ConnectWithoutContactOutlinedIcon,
       id: "contact",
-      xy: "2/3",
-      active: xy == "2/3",
+      xy: "3/3",
+      active: xy == "3/3",
     }, {
       text: "Stellenangebote",
       icon: PersonAddAltOutlinedIcon,
       id: "hiring",
-      xy: "2/4",
-      active: xy == "2/4",
+      xy: "3/4",
+      active: xy == "3/4",
     }, {
       text: "Das Team",
       icon: GroupsOutlinedIcon,
       id: "team",
-      xy: "2/5",
-      active: xy == "2/5",
+      xy: "3/5",
+      active: xy == "3/5",
     }
   ];
 
@@ -72,6 +74,98 @@ export default function Home() {
       <SwipeXYControl xy={xy} changeXY={(str: string) => {
         setXY(str);
       }} >
+
+        <SwipeXYHorizontal>
+          <SwipeXYElement onc={"0000"}>
+            <Stack sx={{
+              minHeight: "100vh",
+              width: "100vw",
+              background: "linear-gradient(to bottom, #eecda3, #ef629f)",
+            }}>
+              _horizontal_1
+              <Box onClick={() => {
+                setXY("1/0");
+              }} sx={{
+                mt: 55,
+                mx: "auto",
+                bgcolor: "white",
+                py: 2,
+                width: 150,
+                textAlign: "center"
+
+              }}>
+                <Typography>
+                  zur nächsten slide
+                </Typography>
+              </Box>
+            </Stack>
+          </SwipeXYElement>
+          <SwipeXYElement onc={"0000"}>
+            <Stack sx={{
+              minHeight: "100vh",
+              width: "100vw",
+              background: "linear-gradient(to bottom, #eecda3, #ef629f)",
+            }}>
+              _horizontal_3
+              <Box onClick={() => {
+                setXY("2/0");
+              }} sx={{
+                mt: 55,
+                mx: "auto",
+                bgcolor: "white",
+                py: 2,
+                width: 150,
+                textAlign: "center"
+
+              }}>
+                <Typography>
+                  zur nächsten slide
+                </Typography>
+              </Box>
+            </Stack>
+          </SwipeXYElement>
+          <SwipeXYElement onc={"0000"}>
+            <Stack sx={{
+              minHeight: "100vh",
+              width: "100vw",
+              background: "linear-gradient(to bottom, #eecda3, #ef629f)",
+            }}>
+              _horizontal_3
+              <Box onClick={() => {
+                setXY("3/0");
+              }} sx={{
+                mt: 55,
+                mx: "auto",
+                bgcolor: "white",
+                py: 2,
+                width: 150,
+                textAlign: "center"
+
+              }}>
+                <Typography>
+                  zur nächsten slide
+                </Typography>
+              </Box>
+            </Stack>
+          </SwipeXYElement>
+          <SwipeXYElement onc={"0110"} startX={true}>
+            <Stack sx={{
+              minHeight: "100%",
+              width: "100%",
+              background: "linear-gradient(to bottom, #eecda3, #ef629f)",
+            }}>
+              _horizontal_4
+            </Stack>
+          </SwipeXYElement>
+          <SwipeXYElement>
+            <Stack sx={{
+              minHeight: "100vh",
+              width: "100vw",
+            }}>
+              _horizontal_5
+            </Stack>
+          </SwipeXYElement>
+        </SwipeXYHorizontal>
 
         <SwipeXYElement>
           <Stack sx={{

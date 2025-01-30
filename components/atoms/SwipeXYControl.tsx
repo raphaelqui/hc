@@ -3,11 +3,70 @@ import { Stack, Box } from "@mui/material";
 /*
      TODOS
 
-     -> diese Komponente muss irgendwie mit der nav Komponente verknüpft werden
-     -> sidemenu mit hamburger öffnen
-         
-     -> kachel wird aktiv wenn wir es fokussieren!
 
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+    okay das der Nutzer auf der Plattform nicht einfach so ansteuern kann
+    ist nun gelöst durch, die oncProp und der getONCByElem. 
+
+    Nun könnte man jedoch per Konsole einen bestimmtes Abschnitt
+    selber anlenken, nur der content wird halt nur durch eine
+    bestimmte Authentifikation gelanden und gerendert, das reicht
+    also fürs erste
+    ->  NOT_USER_REACHABLE:: prop_onc & getONCByElem
+    
+
+
+
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    Sticky component, welche eine sehr hohe Kachel einnimmt, es soll der Anschein
+    gemacht werden dass durch das vertikale Scrollen ein horizontales Scrollen
+    tatsächlich gemacht wird. 
+    Dann brauchen wir eine Berechnung des Mittelpunkt des Viewports, sodass wir einen 
+    Fortschritt haben, wichtig dabei ist nur das wir im Hinterkopf behalten,
+    - - - - - - - - - -
+    -                 -
+    -                 -
+    -        x        -   } Start bekommt height 100vh, sodass wenn der viewport genau
+    -                 -     darauf liegt, haben wir 0% Fortschritt
+    -                 -
+    - - - - - - - - - -
+    -                 -      
+    -                 -      
+    -                 -      
+    -                 -      
+    -                 -      
+    -                 -      
+    -        x        -     << Mittelpunkt - 65% oder etwa nicht ??? vielleicht 
+    -                 -
+    -                 -
+    - - - - - - - - - -
+    -                 -
+    -                 -
+    -        x        -  } Ende bekommt height 100vh, wenn viewport draufliegt
+    -                 -    haben wir 100%, 
+    -                 -
+    - - - - - - - - - -
+
+    ->  NEW_COMPONENT:: horizontal Percentenage
+    
+    
+
+    
+
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    Elemente mit einer fadeIn Animation versehen, sodass diese dann aufploppen
+    ->  NEW_COMPONENT:: FADE_WRAPPER 
+
+
+
+
+
+
+
+
+    -> URLAUB VERBUCHEN !!!!!!!!!!!
+    -> CHATBOT -> erstellt pdfs/ eine komplette Seite die man
+       dann runterladen kann.
 
      SIDEQUEST
      -> übrigens whatsappbot bauen für ali:
@@ -20,6 +79,7 @@ import { Stack, Box } from "@mui/material";
      aber dieselben
      - überdies müssen sollten die Kacheln immer etwas größer werden
      - jedes Element wird benachrichtig wenn dieses aktiv ist
+
       */
 
 const convXY = (xy: string) => {
@@ -37,6 +97,13 @@ const getONC = (rowMajor: any[], cols: number, xy: string) => {
     resStr += rowMajor[(y + 1) * cols + x] ? "1" : "0";
     resStr += rowMajor[y * cols + x - 1] ? "1" : "0";
     return resStr;
+}
+const getONCByElem = (rowMajor: any[], cols: number, x: number, y: number) => {
+    let onc: string = "1111"
+    if (rowMajor[y * cols + x].props.children.props.onc) {
+        onc = rowMajor[y * cols + x].props.children.props.onc;
+    }
+    return onc;
 }
 const printMatrix = (rowMajor: any, rows: number, cols: number) => {
     let tmpStr = "";
@@ -101,7 +168,8 @@ const SwipeXYControl: React.FunctionComponent<ISwipeXYControl> = ({ children, xy
             const viewStart = sockel.scrollLeft;
             const viewEnd = sockel.scrollLeft + window.innerWidth;
             if ((viewEnd - elemEndX) >= 90) {
-                if (rowMajor[y * cols + (x + 1)]) {
+                let onc = getONCByElem(rowMajor, cols, x, y);
+                if (rowMajor[y * cols + (x + 1)] && onc[1] == "1") {
                     setX((prevX) => {
                         changeXY((prevX + 1) + "/" + y);
                         return prevX + 1;
@@ -110,7 +178,8 @@ const SwipeXYControl: React.FunctionComponent<ISwipeXYControl> = ({ children, xy
                     scroll();
                 }
             } else if ((elemStartX - viewStart) >= 90) {
-                if (rowMajor[y * cols + (x - 1)]) {
+                let onc = getONCByElem(rowMajor, cols, x, y);
+                if (rowMajor[y * cols + (x - 1)] && onc[3] == "1") {
                     setX((prevX) => {
                         changeXY((prevX - 1) + "/" + y);
                         return prevX - 1;
@@ -127,7 +196,8 @@ const SwipeXYControl: React.FunctionComponent<ISwipeXYControl> = ({ children, xy
             const viewStart = sockel.scrollTop
             const viewEnd = Math.floor(sockel.scrollTop + window.innerHeight);
             if ((viewEnd - elemEndY) >= 90) {
-                if (rowMajor[(y + 1) * cols + x]) {
+                let onc = getONCByElem(rowMajor, cols, x, y);
+                if (rowMajor[(y + 1) * cols + x] && onc[2] == "1") {
                     setY((prevY) => {
                         changeXY(x + "/" + (prevY + 1));
                         return prevY + 1;
@@ -137,7 +207,8 @@ const SwipeXYControl: React.FunctionComponent<ISwipeXYControl> = ({ children, xy
                     scroll();
                 }
             } else if ((elemStartY - viewStart) >= 90) {
-                if (rowMajor[(y - 1) * cols + x]) {
+                let onc = getONCByElem(rowMajor, cols, x, y);
+                if (rowMajor[(y - 1) * cols + x] && onc[0] == "1") {
                     setY((prevY) => {
                         changeXY(x + "/" + (prevY - 1));
                         return prevY - 1;
@@ -172,20 +243,20 @@ const SwipeXYControl: React.FunctionComponent<ISwipeXYControl> = ({ children, xy
             lastScrollX = currentScrollX;
             lastScrollY = currentScrollY;
         }
-
         const handleEndScroll = () => {
-            const onc = getONC(rowMajor, cols, x + "/" + y);
+            let onc = getONC(rowMajor, cols, x + "/" + y);
             const elemStartX = computeScroll()[0];
             const elemStartY = computeScroll()[1];
             if (Math.abs(elemStartY - sockel.scrollTop) < 5 && Math.abs(elemStartX - sockel.scrollLeft) > -5 && Math.abs(elemStartX - sockel.scrollLeft) < 5 && Math.abs(elemStartY - sockel.scrollTop) > -5) {
-                console.log(onc);
+                if (rowMajor[y * cols + x].props.children.props.onc) {
+                    onc = rowMajor[y * cols + x].props.children.props.onc;
+                }
                 if (onc[0] == "1" || onc[2] == "1") {
                     sockel.style.overflowY = "scroll";
                 }
                 if (onc[1] == "1" || onc[3] == "1") {
                     sockel.style.overflowX = "scroll";
                 }
-                console.log("logo");
                 return sockel?.addEventListener("wheel", handleScroll);
             } else {
                 scroll();

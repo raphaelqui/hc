@@ -3,6 +3,7 @@ import { Stack } from "@mui/material";
 interface ISwipeXYElement {
     children?: any;
     startX?: boolean;
+    onc?: string;
 }
 const SwipeXYElement: React.FunctionComponent<ISwipeXYElement> = ({ startX = false, children }) => {
     return <Stack sx={{
